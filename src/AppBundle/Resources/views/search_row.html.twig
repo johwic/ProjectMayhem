@@ -1,0 +1,3 @@
+{% for player in players %}<tr player-id="{{ player.id }}"><td style="font-weight: bold">{{ player.knownName }}</td><td>Manchester United</td></td><td>{{ player.age }}</td></tr>
+{% else %}<tr><td>No results</td></tr>
+{% endfor %}

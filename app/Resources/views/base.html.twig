@@ -3,22 +3,25 @@
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
+
         {% block stylesheets %}
-            {% stylesheets '@AppBundle/Resources/public/css/*' filter='cssrewrite' %}
-            <link rel="stylesheet" href="{{ asset_url }}" />
+            {% stylesheets '%kernel.root_dir%/Resources/public/css/*' filter='cssrewrite' %}
+                <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
             <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
         {% endblock %}
 
-
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}
-            {% javascripts '@AppBundle/Resources/public/js/jquery-2.1.4.min.js' %}
-            <script type="text/javascript" src="{{ asset_url }}"></script>
-            {% endjavascripts %}
-        {% endblock %}
+    <div id="wrapper">
+        <div id="cssmenu" class="align-center">{{ knp_menu_render('main') }}</div>
+            {% block body %}{% endblock %}
+            {% block javascripts %}
+                {% javascripts '%kernel.root_dir%/Resources/public/js/vendor/*' %}
+                <script type="text/javascript" src="{{ asset_url }}"></script>
+                {% endjavascripts %}
+            {% endblock %}
+        </div>
     </body>
 </html>

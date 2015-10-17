@@ -2,32 +2,6 @@
 
 {% block body %}
     <div class="container">
-        {% form_theme form 'AppBundle:Form:form_layout.html.twig' %}
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-
-        <div id="result_div">
-
-                <table><tbody></tbody></table>
-
-        </div>
-        {{ form_end(form) }}
+        <h1>Welcome to Project Mayhem!</h1>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    <script type="text/javascript">
-        var conf = {
-            url: "{{ form.vars.action }}",
-            query_id: "#{{ form.knownName.vars.id }}",
-            result_id: "#result_div",
-            slide_speed: "fast",
-            type_delay: 350,
-            select_column_index: 0
-        };
-    </script>
-    {{ parent() }}
-    {%  javascripts '@AppBundle/Resources/public/js/script.js'%}
-<script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
 {% endblock %}

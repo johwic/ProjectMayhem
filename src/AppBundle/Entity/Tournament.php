@@ -31,7 +31,7 @@ class Tournament
     protected $name;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Region")
+     * @ORM\ManyToOne(targetEntity="Region", inversedBy="tournaments")
      * @var Region
      */
     protected $region;
@@ -114,5 +114,10 @@ class Tournament
     public function getRegion()
     {
         return $this->region;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

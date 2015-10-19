@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -35,6 +36,22 @@ class Region
      * @var string
      */
     protected $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Tournament", mappedBy="region")
+     * @var Tournament[]
+     */
+    protected $tournaments;
+
+    public function __construct()
+    {
+        $this->tournaments = new ArrayCollection();
+    }
+
+    public function getTournaments()
+    {
+        return $this->tournaments;
+    }
 
     /**
      * Get id
@@ -113,5 +130,10 @@ class Region
     public function getName()
     {
         return $this->name;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

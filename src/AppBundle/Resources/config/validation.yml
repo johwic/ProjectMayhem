@@ -1,0 +1,24 @@
+AppBundle\Entity\Region:
+    properties:
+        name:
+            - NotBlank: ~
+        type:
+            - Choice: { choices : [1, 0]}
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: wsId
+
+AppBundle\Entity\Tournament:
+    properties:
+        region:
+            - Valid: ~
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: wsId
+
+AppBundle\Entity\Season:
+    properties:
+        year:
+            - NotBlank: ~
+        tournament:
+            - Valid: ~
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: wsId

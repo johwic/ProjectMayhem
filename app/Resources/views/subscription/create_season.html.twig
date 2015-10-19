@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        {% form_theme form 'form/form_layout.html.twig' %}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="submit" class="button-primary" value="Save" />
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{%  block javascripts %}
+    {{  parent() }}
+
+    <script type="text/javascript">
+        $body = $("body");
+
+        $(document).on({
+            ajaxStart: function() { $body.addClass("loading");    },
+            ajaxStop: function() { $body.removeClass("loading"); }
+        });
+
+        $(document).ready(function() {
+            var $region = $('#{{ form.region.vars.id }}');
+            var tournament = '#{{ form.tournament.vars.id }}';
+            var wsId = '#{{ form.wsId.vars.id }}';
+            var $name = $('#{{ form.year.vars.id }}');
+
+            $region.change(function () {
+                var data = {};
+                data[$region.attr('name')] = $region.val();
+                $(wsId).find('option:not(:first)').remove();
+                $.ajax({
+                    url: '{{ form.vars.action }}',
+                    type: '{{ form.vars.method }}',
+                    data: data,
+                    success: function (response) {
+                        $(tournament).replaceWith(response.html);
+                    }
+                });
+            });
+
+            $region.closest('form').on('change', tournament, function () {
+                var url = '/ProjectMayhem/web/app_dev.php/find-seasons/' + $(this).val();
+                $(wsId).find('option:not(:first)').remove();
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+                        $.each(response.seasons, function (index, option) {
+                            $(wsId).append(new Option(option.name, option.wsid, false, false));
+                        });
+                    }
+                });
+            });
+
+            $region.closest('form').on('change', wsId, function () {
+                $name.val($("option:selected", this).text());
+            });
+        });
+    </script>
+
+{% endblock %}

@@ -80,7 +80,7 @@ function search_query(search_object, bypass_check_last_value, reset_current_page
 
                         },
                         error: function () {
-                            result.find('table tbody').html('Something went wrong. Please refresh the page.');
+                            result.find('table tbody').html('<tr><td>Something went wrong. Please refresh the page.</td></tr>');
 
                             remove_footer();
                         },

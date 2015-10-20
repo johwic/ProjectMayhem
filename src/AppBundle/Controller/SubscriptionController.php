@@ -22,7 +22,9 @@ class SubscriptionController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $content = $this->get('app.whoscored')->getStageIds(4);
 
+        return new JsonResponse(array('stages' => $content));
     }
 
     /**
@@ -39,7 +41,7 @@ class SubscriptionController extends Controller
             $em->persist($season);
             $em->flush();
 
-            return new RedirectResponse('');
+            return new RedirectResponse('/');
         }
 
         if ($request->isXmlHttpRequest()) {
@@ -52,20 +54,10 @@ class SubscriptionController extends Controller
     /**
      * @Route("/find-seasons/{id}", name="find-seasons")
      */
-    public function findSeasonAction(Tournament $tournament)
+    public function findSeasonAction($id)
     {
-        $tId = $tournament->getWsId();
-        $rId = $tournament->getRegion()->getWsId();
-
-        $req = Request::create('http://www.whoscored.com/Regions/' . $rId . '/Tournaments/' . $tId . '/', 'GET');
-        $remoteKernel = new RemoteHttpKernel();
-        $response = $remoteKernel->handle($req);
-
-        $crawler = new Crawler($response->getContent());
-        $content = array('seasons' => $crawler->filter('#seasons > option')->each(function (Crawler $node, $i) {
-            preg_match('/Seasons\/(\d+)/', $node->attr('value'), $matches);
-            return array('wsid' => (int) $matches[1], 'name' => $node->text());
-        }));
+        $ret = $this->get('app.whoscored')->getSeasonIds($id);
+        $content = array('seasons' => $ret);
 
         return new JsonResponse($content);
     }

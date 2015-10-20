@@ -50,7 +50,11 @@ class SeasonType extends AbstractType
         };
 
         $addIdField = function (FormInterface $form, $tournamentId = null) {
-            $choices = (null === $tournamentId) ? array() : $this->provider->getSeasonIds($tournamentId);
+            $ret = (null === $tournamentId) ? array() : $this->provider->getSeasonIds($tournamentId);
+            $choices = array();
+            foreach ($ret as $r) {
+                $choices[$r['wsid']] = $r['name'];
+            }
 
             $form->add('wsId', 'choice', array(
                 'placeholder' => 'Select season',

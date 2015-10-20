@@ -4,7 +4,18 @@
     <div class="container">
         {% form_theme form 'form/form_layout.html.twig' %}
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+        <div class="row">
+            <div class="four columns">
+                {{ form_row(form.region, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="four columns">
+                {{ form_row(form.tournament, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="four columns">
+                {{ form_row(form.wsId, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+        </div>
         <input type="submit" class="button-primary" value="Save" />
         {{ form_end(form) }}
     </div>

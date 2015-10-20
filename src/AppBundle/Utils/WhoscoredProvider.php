@@ -8,8 +8,6 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use Zeroem\CurlBundle\HttpKernel\RemoteHttpKernel;
 
-use AppBundle\Entity\Tournament;
-
 class WhoscoredProvider
 {
     private $em;
@@ -22,18 +20,44 @@ class WhoscoredProvider
     {
         $tournament = $this->em->getRepository('AppBundle:Tournament')->find($id);
 
-        $tId = $tournament->getWsId();
-        $rId = $tournament->getRegion()->getWsId();
+        $t = $tournament->getWsId();
+        $r = $tournament->getRegion()->getWsId();
 
-        $req = Request::create('http://www.whoscored.com/Regions/' . $rId . '/Tournaments/' . $tId . '/', 'GET');
+        $req = Request::create(Url::get('season', array('r' => $r, 't' => $t)), 'GET');
         $remoteKernel = new RemoteHttpKernel();
         $response = $remoteKernel->handle($req);
 
         $crawler = new Crawler($response->getContent());
         $content = $crawler->filter('#seasons > option')->each(function (Crawler $node, $i) {
             preg_match('/Seasons\/(\d+)/', $node->attr('value'), $matches);
-            return array("$matches[1]" => $node->text());
+            return array('wsid' => $matches[1], 'name' => $node->text());
         });
+
+        return $content;
+    }
+
+    public function getStageIds($seasonId)
+    {
+        $season = $this->em->getRepository('AppBundle:Season')->find($seasonId);
+        $s = $season->getWsId();
+        $t = $season->getTournament()->getWsId();
+        $r = $season->getTournament()->getRegion()->getWsId();
+
+        $req = Request::create(Url::get('stages', array('r' => $r, 't' => $t, 's' => $s)), 'GET');
+        $remoteKernel = new RemoteHttpKernel();
+        $response = $remoteKernel->handle($req);
+
+        $crawler = new Crawler($response->getContent());
+        $content = $crawler->filter('#stages > option')->each(function (Crawler $node, $i) {
+            preg_match('/Stages\/(\d+)/', $node->attr('value'), $matches);
+            return array('wsid' => $matches[1], 'name' => $node->text());
+        });
+
+        if ($content == null) {
+            $id = $crawler->filter('div[id^=tournament-tables-]')->attr('id');
+            preg_match('/tournament-tables-(\d+)/', $id, $matches);
+            $content = array(array('wsid' => $matches[1], 'name' => ''));
+        }
 
         return $content;
     }

@@ -10,7 +10,7 @@
             <tbody>
                 {% for stage in stages %}
                     <tr>
-                        <td>{{ stage.name }}</td>
+                        <td><a href="{{ path('stage-detail', {'id' : stage.id}) }}">{{ stage.name }}</a></td>
                         <td>{{ stage.wsid }}</td>
                     </tr>
                 {%  else %}

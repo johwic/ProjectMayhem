@@ -29,36 +29,33 @@ class SubscriptionManager
 
     public function getFixtures(Stage $stage, $week)
     {
-        $result = $this->whoscored->loadStatistics('stagefixtures', array('stageId' => $stage->getWsId(), 'd' => $week, 'isAggregate' => false), true);
-
-        $fixtures = eval('return ' . str_replace(array(',,', ',,'), array(',null,', ',null,'), $result['content']) . ';');
+        $fixtures = $this->whoscored->loadStatistics('stagefixtures', array('stageId' => $stage->getWsId(), 'd' => $week, 'isAggregate' => false));
         $rows_affected = 0;
-        if ($result['status_code'] == 200 && $fixtures != null) {
-            foreach ($fixtures as $fixture) {
-                $matchId = $fixture[0];
-                $count = $this->em->createQuery('SELECT COUNT(m) FROM AppBundle:Match m WHERE m.wsId = :id')->setParameter(':id', $matchId)->getSingleScalarResult();
-                if ($count > 1) continue;
 
-                $homeTeam = $this->em->getRepository('AppBundle:Team')->findOneByWsId($fixture[4]);
-                $awayTeam = $this->em->getRepository('AppBundle:Team')->findOneByWsId($fixture[7]);
+        foreach ($fixtures as $fixture) {
+            $matchId = $fixture[0];
+            $count = $this->em->createQuery('SELECT COUNT(m) FROM AppBundle:Match m WHERE m.wsId = :id')->setParameter(':id', $matchId)->getSingleScalarResult();
+            if ($count == 1) continue;
 
-                $match = new Match();
-                $match->setStage($stage);
-                $match->setWsId($matchId);
-                $time = DateTime::createFromFormat('D, M j Y H:i', $fixture[2] . ' ' . $fixture[3], new DateTimeZone('UTC'))->getTimestamp();
-                $match->setTime($time);
-                $match->setHomeTeam($homeTeam);
-                $match->setAwayTeam($awayTeam);
-                $match->setStatus(0);
+            $homeTeam = $this->em->getRepository('AppBundle:Team')->findOneByWsId($fixture[4]);
+            $awayTeam = $this->em->getRepository('AppBundle:Team')->findOneByWsId($fixture[7]);
 
-                $this->em->persist($match);
-                $rows_affected++;
-            }
+            $match = new Match();
+            $match->setStage($stage);
+            $match->setWsId($matchId);
+            $time = DateTime::createFromFormat('D, M j Y H:i', $fixture[2] . ' ' . $fixture[3], new DateTimeZone('UTC'))->getTimestamp();
+            $match->setTime($time);
+            $match->setHomeTeam($homeTeam);
+            $match->setAwayTeam($awayTeam);
+            $match->setStatus(0);
+
+            $this->em->persist($match);
+            $rows_affected++;
         }
 
         $this->em->flush();
 
-        return array($result['status_code'], $rows_affected);
+        return $rows_affected;
     }
 
     public function getMatchData(Match $match)
@@ -248,8 +245,7 @@ class SubscriptionManager
 
     public function getRegionTeams(Region $region)
     {
-        $result = $this->whoscored->loadStatistics('regionteams', array('id' => $region->getWsId()));
-        $teams = eval('return ' . str_replace(array(',,', ',,'), array(',null,', ',null,'), $result) . ';');
+        $teams = $this->whoscored->loadStatistics('regionteams', array('id' => $region->getWsId()));
 
         foreach ( $teams as $team ) {
             $ret = new Team();

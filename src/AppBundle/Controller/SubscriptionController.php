@@ -78,26 +78,6 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * @Route("/stages", name="stages")
-     */
-    public function stageAction()
-    {
-        $stages = $this->getDoctrine()->getManager()->getRepository('AppBundle:Stage')->findAll();
-
-        return $this->render('subscription/stages.html.twig', array('stages' => $stages));
-    }
-
-    /**
-     * @Route("/stages/{id}", name="stage-detail")
-     */
-    public function stageDetailAction(Stage $stage)
-    {
-        $this->get('app.whoscored')->getStageTeams($stage);
-
-        return $this->render('subscription/stages.html.twig', array('stages' => $stages));
-    }
-
-    /**
      * @Route("/matches", name="matches")
      */
     public function matchAction()
@@ -107,30 +87,5 @@ class SubscriptionController extends Controller
         $sm->getMatchData($match);
 
         return $this->render('default/index.html.twig', array());
-    }
-
-    /**
-     * @Route("/stages/add", name="create_stage")
-     */
-    public function createStageAction(Request $request)
-    {
-        $stage = new Stage();
-        $form = $this->createForm(new StageType($this->get('app.whoscored')), $stage);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            if ($stage->getName() == '') {
-                $stage->setName($stage->getTournament()->getName() . ' ' . $stage->getSeason()->getYear());
-            }
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($stage);
-            $em->flush();
-
-            $this->addFlash('notice', 'Stage ' . $stage->getName() . ' with WhoScored ID ' . $stage->getWsId() . ' saved.');
-
-            return $this->redirectToRoute('homepage');
-        }
-
-        return $this->render('subscription/create_stage.html.twig', array('form' => $form->createView()));
     }
 }

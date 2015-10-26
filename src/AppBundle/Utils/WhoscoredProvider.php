@@ -82,10 +82,18 @@ class WhoscoredProvider
 
     }
 
-    public function loadStatistics($key, $param, $returnCode = false)
+    /**
+     * @param String $key Url key
+     * @param Array $param Array of parameters
+     *
+     * @return Object $content
+     *
+     * @throws \Exception
+     */
+    public function loadStatistics($key, $param)
     {
-        $cache_key = $key . '?' . http_build_query($param);
-        $code = 200;
+        $cache_key = $key . http_build_query($param);
+        $code = 201;
 
         if (false === ($content = $this->cache->fetch($cache_key))) {
             $generator = new RequestGenerator(array(
@@ -106,15 +114,30 @@ class WhoscoredProvider
                 'Connection' => 'keep-alive',
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0'
             ));
+
             $remoteKernel = new RemoteHttpKernel($generator);
-            $response = $remoteKernel->handle($req);
+            try {
+                $response = $remoteKernel->handle($req);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
             $code = $response->getStatusCode();
             $content = $response->getContent();
 
-            if ($response->getStatusCode() == 200) $this->cache->save($cache_key, $content);
+            if ($code !== 200) throw new \Exception($content, $code);
+
+            $this->cache->save($cache_key, $content);
         }
 
-        if ( $returnCode ) return array('content' => $content, 'status_code' => $code);
+        if (Url::isArray($key)) {
+            $content = str_replace(array(',,', ',,', '"', "\'"), array(',null,', ',null,', '\"', "'"), $content);
+            $content = preg_replace("/'(.*?)'(\s*[,\]])/", '"$1"$2', $content);
+        }
+
+        $content = json_decode($content);
+
+        if (json_last_error() !== JSON_ERROR_NONE || $content == null)  throw new \Exception('Json error or empty object', $code);
 
         return $content;
     }

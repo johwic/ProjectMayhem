@@ -81,4 +81,11 @@ class Url
 
         return implode('&', $queryString);
     }
+
+    public static function isArray($key)
+    {
+        $arr = array('stagefixtures');
+
+        return in_array($key, $arr) ? true : false;
+    }
 }

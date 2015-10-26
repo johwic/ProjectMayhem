@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        {% form_theme form 'form/form_layout.html.twig' %}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="row">
+            <div class="three columns">
+                {{ form_row(form.region, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="three columns">
+                {{ form_row(form.tournament, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="three columns">
+                {{ form_row(form.season, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="three columns">
+                {{ form_row(form.wsId, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+        </div>
+        <input type="submit" class="button-primary" value="Save" />
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{%  block javascripts %}
+    {{  parent() }}
+
+    <script type="text/javascript">
+        $body = $("body");
+
+        $(document).on({
+            ajaxStart: function() { $body.addClass("loading");    },
+            ajaxStop: function() { $body.removeClass("loading"); }
+        });
+
+        $(document).ready(function() {
+            var $region = $('#{{ form.region.vars.id }}');
+            var tournament = '#{{ form.tournament.vars.id }}';
+            var season = '#{{ form.season.vars.id }}';
+            var wsId = '#{{ form.wsId.vars.id }}';
+            var $name = $('#{{ form.name.vars.id }}');
+
+            $region.change(function () {
+                var url = '/ProjectMayhem/web/app_dev.php/get-tournaments/' + $(this).val();
+                $(tournament).find('option:not(:first)').remove();
+                $(season).find('option:not(:first)').remove();
+                $(wsId).find('option:not(:first)').remove();
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+                        $.each(response.tournaments, function (index, option) {
+                            $(tournament).append(new Option(option.name, option.id, false, false));
+                        });
+                    }
+                });
+            });
+
+            $region.closest('form').on('change', tournament, function () {
+                var url = '/ProjectMayhem/web/app_dev.php/get-seasons/' + $(this).val();
+                $(season).find('option:not(:first)').remove();
+                $(wsId).find('option:not(:first)').remove();
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+                        $.each(response.seasons, function (index, option) {
+                            $(season).append(new Option(option.name, option.id, false, false));
+                        });
+                    }
+                });
+            });
+
+            $region.closest('form').on('change', season, function () {
+                var url = '/ProjectMayhem/web/app_dev.php/find-stages/' + $(this).val();
+                $(wsId).find('option:not(:first)').remove();
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+                        $.each(response.stages, function (index, option) {
+                            $(wsId).append(new Option(option.name, option.wsid, false, false));
+                        });
+                    }
+                });
+            });
+
+            $region.closest('form').on('change', wsId, function () {
+                $name.val($("option:selected", this).text());
+            });
+        });
+    </script>
+
+{% endblock %}

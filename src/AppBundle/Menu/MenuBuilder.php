@@ -25,7 +25,9 @@ class MenuBuilder
 
         $menu->addChild('Home', array('route' => 'homepage'));
         $menu->addChild('Bets', array('route' => 'betting'));
+        $menu->addChild('Regions', array('route' => 'regions'));
         $menu->addChild('Seasons', array('route' => 'seasons'));
+        $menu->addChild('Stages', array('route' => 'stages'));
 
         return $menu;
     }

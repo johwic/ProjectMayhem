@@ -1,0 +1,266 @@
+[
+  {
+    "filterName" : "AccurateCrosses",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "passCrossAccurate"}],
+    "callback"  : "setAccurateCrosses"
+  },
+  {
+    "filterName" : "AccurateLongBalls",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "passLongBallAccurate"}, {"func" : "isAnyOfTypes", "value" : [1]}],
+    "callback"  : "setAccurateLongBalls"
+  },
+  {
+    "filterName" : "TotalLongBalls",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["passLongBallInaccurate", "passLongBallAccurate"]}, {"func" : "isAnyOfTypes", "value" : [1]}],
+    "callback"  : "setTotalLongBalls"
+  },
+
+  {
+    "filterName" : "Accurate Passes",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "passAccurate"}],
+    "callback"  : "setAccuratePasses"
+  },
+
+  {
+    "filterName" : "Accurate Through Balls",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "passThroughBallAccurate"}],
+    "callback"  : "setAccurateThroughBalls"
+  },
+
+  {
+    "filterName" : "Total Through Balls",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["passThroughBallAccurate", "passThroughBallInaccurate"]}],
+    "callback"  : "setTotalThroughBalls"
+  },
+
+  {
+    "filterName" : "AerialLost",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "duelAerialLost"}],
+    "callback"  : "setAerialLost"
+  },
+
+  {
+    "filterName" : "AerialWon",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "duelAerialWon"}],
+    "callback"  : "setAerialWon"
+  },
+
+  {
+    "filterName" : "Assists",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "assist"}],
+    "callback"  : "setAssists"
+  },
+
+  {
+    "filterName" : "Dispossessed",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "dispossessed"}],
+    "callback"  : "setDispossessed"
+  },
+
+  {
+    "filterName" : "Unsuccessful Dribbles",
+    "satisfier" : [{"func" : "isOfType", "value" : 3}, {"func" : "isSuccessful", "value" : 0}],
+    "callback"  : "setDribblesLost"
+  },
+
+  {
+    "filterName" : "Successful Dribbles",
+    "satisfier" : [{"func" : "isOfType", "value" : 3}, {"func" : "isSuccessful", "value" : 1}],
+    "callback"  : "setDribblesWon"
+  },
+
+  {
+    "filterName" : "Goals",
+    "satisfier" : [{"func" : "isOfType", "value" : 16}, {"func" : "hasNotSatisfier", "value" : "goalOwn"}],
+    "callback"  : "setGoalsScored"
+  },
+
+  {
+    "filterName" : "OwnGoals",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "goalOwn"}],
+    "callback"  : "setOwnGoalsScored"
+  },
+
+  {
+    "filterName" : "Total passes",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["passAccurate", "passInaccurate"]}],
+    "callback"  : "setTotalPasses"
+  },
+
+  {
+    "filterName" : "Interceptions",
+    "satisfier" : [{"func" : "isSuccessful", "value" : 1}, {"func" : "isOfType", "value" : 8}],
+    "callback"  : "setInterceptions"
+  },
+
+  {
+    "filterName" : "Total Crosses",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["passCrossAccurate", "passCrossInaccurate"]}],
+    "callback"  : "setTotalCrosses"
+  },
+
+  {
+    "filterName" : "Key Passes",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "passKey"}],
+    "callback"  : "setKeyPasses"
+  },
+
+  {
+    "filterName" : "Total shots",
+    "satisfier" : [{"func" : "isAnyOfTypes", "value" : [13, 14, 15, 16]}],
+    "callback"  : "setTotalShots"
+  },
+
+  {
+    "filterName" : "ShotsOnTarget",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "shotOnTarget"}],
+    "callback"  : "setShotsOnTarget"
+  },
+
+  {
+    "filterName" : "ShotsHitWoodwork",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "shotOnPost"}],
+    "callback"  : "setShotsHitPost"
+  },
+
+  {
+    "filterName" : "BlockedShots",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "shotBlocked"}],
+    "callback"  : "setBlockedShots"
+  },
+
+  {
+    "filterName" : "Turnovers",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "turnover"}],
+    "callback"  : "setTurnovers"
+  },
+
+  {
+    "filterName" : "Touches",
+    "satisfier" : [{"func" : "isTouch", "value" : 1}],
+    "callback"  : "setTouches"
+  },
+
+  {
+    "filterName" : "Total Tackles",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["tackleWon", "tackleLost", "challengeLost"]}],
+    "callback"  : "setTotalTackles"
+  },
+
+  {
+    "filterName" : "Was Dribbled",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "challengeLost"}],
+    "callback"  : "setWasDribbled"
+  },
+
+  {
+    "filterName" : "Substitution On",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "subOn"}],
+    "callback"  : "setSubstitutionType",
+    "value"     : 2
+  },
+
+  {
+    "filterName" : "Substitution Off",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "subOff"}],
+    "callback"  : "setSubstitutionType",
+    "value"     : 1
+  },
+
+  {
+    "filterName" : "SubstitutionMinute",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["subOff", "subOn"]}],
+    "callback"  : "setSubstitutionMinute",
+    "return"    : "minute"
+  },
+
+  {
+    "filterName" : "Clearances",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "clearanceEffective"}],
+    "callback"  : "setEffectiveClearances"
+  },
+
+  {
+    "filterName" : "Total Clearances",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "clearanceTotal"}],
+    "callback"  : "setTotalClearances"
+  },
+
+  {
+    "filterName" : "Fouls Given",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "foulGiven"}],
+    "callback"  : "setWasFouled"
+  },
+
+  {
+    "filterName" : "Shots Blocked",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "outfielderBlock"}],
+    "callback"  : "setShotsBlocked"
+  },
+
+  {
+    "filterName" : "Fouls Commited",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "foulCommitted"}],
+    "callback"  : "setFouls"
+  },
+
+  {
+    "filterName" : "Offsides",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "offsideGiven"}],
+    "callback"  : "setOffsides"
+  },
+
+  {
+    "filterName" : "Offsides provoked",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "offsideProvoked"}],
+    "callback"  : "setOffsidesProvoked"
+  },
+
+  {
+    "filterName" : "Yellow Cards",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["yellowCard", "voidYellowCard"]}],
+    "callback"  : "setYellowCards"
+  },
+
+  {
+    "filterName" : "Second Yellow Cards",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "secondYellow"}],
+    "callback"  : "setSecondYellowCards"
+  },
+
+  {
+    "filterName" : "Red Cards",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "redCard"}],
+    "callback"  : "setRedCards"
+  },
+
+  {
+    "filterName" : "ErrorLeadToGoal",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "errorLeadsToGoal"}],
+    "callback"  : "setErrorLeadGoal"
+  },
+
+  {
+    "filterName" : "ErrorLeadToShot",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "errorLeadsToShot"}],
+    "callback"  : "setErrorLeadShot"
+  },
+
+  {
+    "filterName" : "Saves",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "keeperSaveTotal"}],
+    "callback"  : "setSaves"
+  },
+
+  {
+    "filterName" : "Claims",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["keeperClaimHighWon", "keeperClaimHighLost"]}],
+    "callback"  : "setClaims"
+  },
+
+  {
+    "filterName" : "Punches",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "punches"}],
+    "callback"  : "setPunches"
+  }
+]

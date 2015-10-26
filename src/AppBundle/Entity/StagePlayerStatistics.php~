@@ -1,0 +1,335 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="stage_player_statistics", uniqueConstraints={@ORM\UniqueConstraint(columns={"player_id", "team_id", "stage_id"})})
+ */
+class StagePlayerStatistics
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer", options={"unsigned"=true})
+     * @ORM\GeneratedValue
+     * @var int
+     */
+    protected $id;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Player")
+     * @var Player
+     */
+    protected $player;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Team")
+     * @var Team
+     */
+    protected $team;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Stage")
+     * @var Stage
+     */
+    protected $stage;
+
+
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="goals_scored")
+     * @var int
+     */
+    protected $goalsScored;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="own_goals_scored")
+     * @var int
+     */
+    protected $ownGoalsScored;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_shots")
+     * @var int
+     */
+    protected $totalShots;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="shots_on_target")
+     * @var int
+     */
+    protected $shotsOnTarget;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="blocked_shots")
+     * @var int
+     */
+    protected $blockedShots;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="shots_hit_post")
+     * @var int
+     */
+    protected $shotsHitPost;
+
+
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_passes")
+     * @var int
+     */
+    protected $totalPasses;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_passes")
+     * @var int
+     */
+    protected $accuratePasses;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_crosses")
+     * @var int
+     */
+    protected $totalCrosses;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_crosses")
+     * @var int
+     */
+    protected $accurateCrosses;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_long_balls")
+     * @var int
+     */
+    protected $totalLongBalls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_long_balls")
+     * @var int
+     */
+    protected $accurateLongBalls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_through_balls")
+     * @var int
+     */
+    protected $totalThroughBalls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_through_balls")
+     * @var int
+     */
+    protected $accurateThroughBalls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="assists")
+     * @var int
+     */
+    protected $assists;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="key_passes")
+     * @var int
+     */
+    protected $keyPasses;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="touches")
+     * @var int
+     */
+    protected $touches;
+
+
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="dribbles_won")
+     * @var int
+     */
+    protected $dribblesWon;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="dribbles_lost")
+     * @var int
+     */
+    protected $dribblesLost;
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="aerial_won")
+     * @var int
+     */
+    protected $aerialWon;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="aerial_lost")
+     * @var int
+     */
+    protected $aerialLost;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_tackles")
+     * @var int
+     */
+    protected $totalTackles;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="was_dribbled")
+     * @var int
+     */
+    protected $wasDribbled;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="interceptions")
+     * @var int
+     */
+    protected $interceptions;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_clearances")
+     * @var int
+     */
+    protected $totalClearances;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="effective_clearances")
+     * @var int
+     */
+    protected $effectiveClearances;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="shots_blocked")
+     * @var int
+     */
+    protected $shotsBlocked;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="offsides_provoked")
+     * @var int
+     */
+    protected $offsidesProvoked;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="fouls")
+     * @var int
+     */
+    protected $fouls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="was_fouled")
+     * @var int
+     */
+    protected $wasFouled;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="dispossessed")
+     * @var int
+     */
+    protected $dispossessed;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="turnovers")
+     * @var int
+     */
+    protected $turnovers;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="offsides")
+     * @var int
+     */
+    protected $offsides;
+
+
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="saves")
+     * @var int
+     */
+    protected $saves;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="claims")
+     * @var int
+     */
+    protected $claims;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="punches")
+     * @var int
+     */
+    protected $punches;
+
+
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="error_lead_goal")
+     * @var int
+     */
+    protected $errorLeadGoal;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="error_lead_shot")
+     * @var int
+     */
+    protected $errorLeadShot;
+
+
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="red_cards")
+     * @var int
+     */
+    protected $redCards;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="yellow_cards")
+     * @var int
+     */
+    protected $yellowCards;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="second_yellow_cards")
+     * @var int
+     */
+    protected $secondYellowCards;
+
+
+    
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="games_started")
+     * @var int
+     */
+    protected $gamesStarted;
+    
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="sub_on")
+     * @var int
+     */
+    protected $subOn;
+    
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="sub_off")
+     * @var int
+     */
+    protected $subOff;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="mins_played")
+     * @var int
+     */
+    protected $minsPlayed;
+
+    /**
+     * @ORM\Column(type="boolean", name="man_of_the_match")
+     * @var boolean
+     */
+    protected $manOfTheMatch;
+}

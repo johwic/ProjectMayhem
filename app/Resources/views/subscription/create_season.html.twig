@@ -39,15 +39,17 @@
             var $name = $('#{{ form.year.vars.id }}');
 
             $region.change(function () {
-                var data = {};
-                data[$region.attr('name')] = $region.val();
+                var url = '/ProjectMayhem/web/app_dev.php/get-tournaments/' + $(this).val();
+                $(tournament).find('option:not(:first)').remove();
                 $(wsId).find('option:not(:first)').remove();
+
                 $.ajax({
-                    url: '{{ form.vars.action }}',
-                    type: '{{ form.vars.method }}',
-                    data: data,
+                    url: url,
+                    type: 'GET',
                     success: function (response) {
-                        $(tournament).replaceWith(response.html);
+                        $.each(response.tournaments, function (index, option) {
+                            $(tournament).append(new Option(option.name, option.id, false, false));
+                        });
                     }
                 });
             });

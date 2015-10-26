@@ -1002,4 +1002,37 @@ class StageTeamStatistics
     {
         return $this->stage;
     }
+    
+    public function addMatchStatistics(MatchTeamStatistics $mts)
+    {
+        $this->setAccurateCornersIntoBox($this->getAccurateCornersIntoBox() + $mts->getAccurateCornersIntoBox());
+        $this->setAccuratePasses($this->getAccuratePasses() + $mts->getAccuratePasses());
+        $this->setAerialLost($this->getAerialLost() + $mts->getAerialLost());
+        $this->setAerialWon($this->getAerialWon() + $mts->getAerialWon());
+        $this->setCornersLost($this->getCornersLost() + $mts->getCornersLost());
+        $this->setCornersWon($this->getCornersWon() + $mts->getCornersWon());
+        $this->setDispossessed($this->getDispossessed() + $mts->getDispossessed());
+        $this->setDribbles($this->getDribbles() + $mts->getDribbles());
+        $this->setFouls($this->getFouls() + $mts->getFouls());
+        $this->setGoalsConceded($this->getGoalsConceded() + $mts->getGoalsConceded());
+        $this->setGoalsScored($this->getGoalsScored() + $mts->getGoalsScored());
+        $this->setInterceptions($this->getInterceptions() + $mts->getInterceptions());
+        $this->setMatchesPlayed($this->getMatchesPlayed() + 1);
+        $this->setOffsides($this->getOffsides() + $mts->getOffsides());
+        $this->setPossession($this->getPossession() + $mts->getPossession());
+        //$this->setRedCards($this->getRedCards() + $mts->getRedCards());
+        //$this->setSecondYellow($this->getSecondYellow() + $mts->getSecondYellow());
+        $this->setShotsBlocked($this->getShotsBlocked() + $mts->getShotsBlocked());
+        $this->setShotsConcededInBox($this->getShotsConcededInBox() + $mts->getShotsConcededInBox());
+        $this->setShotsConcededOutBox($this->getShotsConcededOutBox() + $mts->getShotsConcededOutBox());
+        $this->setShotsOnTarget($this->getShotsOnTarget() + $mts->getShotsOnTarget());
+        $this->setThrows($this->getThrows() + $mts->getThrows());
+        $this->setTotalClearances($this->getTotalClearances() + $mts->getTotalClearances());
+        $this->setTotalCornersIntoBox($this->getTotalCornersIntoBox() + $mts->getTotalCornersIntoBox());
+        $this->setTotalPasses($this->getTotalPasses() + $mts->getTotalPasses());
+        $this->setTotalShots($this->getTotalShots() + $mts->getTotalShots());
+        $this->setTotalTackles($this->getTotalTackles() + $mts->getTotalTackles());
+        $this->setWasFouled($this->getWasFouled() + $mts->getWasFouled());
+        //$this->setYellowCards($this->getYellowCards() + $mts->getYellowCards());
+    }
 }

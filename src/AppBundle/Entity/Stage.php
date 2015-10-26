@@ -143,4 +143,9 @@ class Stage
     {
         return $this->season;
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

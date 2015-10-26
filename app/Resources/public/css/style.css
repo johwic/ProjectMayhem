@@ -222,3 +222,90 @@ body.loading {
 body.loading .modal {
     display: block;
 }
+
+.box {
+    border-radius: 0.3em;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #888;
+    border-color: rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+    color: #444;
+    color: rgba(0, 0, 0, 0.8);
+    padding: 1.42857em;
+    margin: 0 0 1.5em 0;
+}
+.box > *:last-child {
+    margin-bottom: 0;
+}
+
+.info {
+    background: #f4f4f4;
+}
+
+.success {
+    background: #88cc88;
+}
+
+.warning {
+    background: #cccc88;
+}
+
+.error {
+    background: #cc8888;
+}
+
+.pagination {
+    background: #fff;
+    color: #222222;
+    cursor: auto;
+    font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    position: relative; }
+
+
+ul.pagination {
+    display: block;
+    margin-left: -0.3125rem;
+    min-height: 1.5rem; }
+ul.pagination li {
+    color: #222222;
+    font-size: 0.875em;
+    height: 1.5rem;
+    margin-left: 0.3125rem; }
+ul.pagination li a, ul.pagination li button {
+    border-radius: 3px;
+    transition: background-color 300ms ease-out;
+    text-decoration: none;
+    background: none;
+    color: #999999;
+    display: block;
+    font-size: 1em;
+    font-weight: normal;
+    line-height: inherit;
+    padding: 0.0625rem 0.625rem 0.0625rem; }
+ul.pagination li:hover a,
+ul.pagination li a:focus, ul.pagination li:hover button,
+ul.pagination li button:focus {
+    background: #e6e6e6; }
+ul.pagination li.unavailable a, ul.pagination li.unavailable button {
+    cursor: default;
+    color: #999999;
+    pointer-events: none; }
+ul.pagination li.unavailable:hover a, ul.pagination li.unavailable a:focus, ul.pagination li.unavailable:hover button, ul.pagination li.unavailable button:focus {
+    background: transparent; }
+ul.pagination li.current a, ul.pagination li.current button {
+    background: #2ba6cb;
+    color: #FFFFFF;
+    cursor: default;
+    font-weight: bold; }
+ul.pagination li.current a:hover, ul.pagination li.current a:focus, ul.pagination li.current button:hover, ul.pagination li.current button:focus {
+    background: #2ba6cb; }
+ul.pagination li {
+    display: block;
+    float: left; }

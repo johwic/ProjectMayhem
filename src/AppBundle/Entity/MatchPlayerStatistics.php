@@ -29,6 +29,9 @@ class MatchPlayerStatistics
      * @var Match
      */
     protected $match;
+
+
+
     
     /**
      * @ORM\Column(type="string", length=32, name="position_text")
@@ -73,40 +76,25 @@ class MatchPlayerStatistics
     protected $substitutionMinute;
     
     /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="formation_place")
-     * @var int
-     */
-    protected $formationPlace;
-    
-    /**
-     * @ORM\Column(type="decimal", precision=4, scale=2, name="overall_rating")
+     * @ORM\Column(type="decimal", precision=4, scale=2, name="rating")
      * @var float
      */
-    protected $overall_rating;
-    
-    /**
-     * @ORM\Column(type="decimal", precision=4, scale=2, name="offensive_rating")
-     * @var float
-     */
-    protected $offensive_rating;
-    
-    /**
-     * @ORM\Column(type="decimal", precision=4, scale=2, name="defensive_rating")
-     * @var float
-     */
-    protected $defensive_rating;
+    protected $rating;
+
+
+
     
     /**
      * @ORM\Column(type="smallint", options={"unsigned"=true}, name="goals_scored")
      * @var int
      */
     protected $goalsScored;
-    
+
     /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="assists")
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="own_goals_scored")
      * @var int
      */
-    protected $assists;
+    protected $ownGoalsScored;
     
     /**
      * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_shots")
@@ -119,6 +107,21 @@ class MatchPlayerStatistics
      * @var int
      */
     protected $shotsOnTarget;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="blocked_shots")
+     * @var int
+     */
+    protected $blockedShots;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="shots_hit_post")
+     * @var int
+     */
+    protected $shotsHitPost;
+
+
+
     
     /**
      * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_passes")
@@ -131,18 +134,75 @@ class MatchPlayerStatistics
      * @var int
      */
     protected $accuratePasses;
-    
+
     /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="duel_won")
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_crosses")
      * @var int
      */
-    protected $duelWon;
-    
+    protected $totalCrosses;
+
     /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="duel_lost")
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_crosses")
      * @var int
      */
-    protected $duelLost;
+    protected $accurateCrosses;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_long_balls")
+     * @var int
+     */
+    protected $totalLongBalls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_long_balls")
+     * @var int
+     */
+    protected $accurateLongBalls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_through_balls")
+     * @var int
+     */
+    protected $totalThroughBalls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_through_balls")
+     * @var int
+     */
+    protected $accurateThroughBalls;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="assists")
+     * @var int
+     */
+    protected $assists;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="key_passes")
+     * @var int
+     */
+    protected $keyPasses;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="touches")
+     * @var int
+     */
+    protected $touches;
+
+
+
+    
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="dribbles_won")
+     * @var int
+     */
+    protected $dribblesWon;
+    
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="dribbles_lost")
+     * @var int
+     */
+    protected $dribblesLost;
 
     
     /**
@@ -158,22 +218,16 @@ class MatchPlayerStatistics
     protected $aerialLost;
     
     /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="touches")
-     * @var int
-     */
-    protected $touches;
-    
-    /**
      * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_tackles")
      * @var int
      */
     protected $totalTackles;
-    
+
     /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="key_passes")
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="was_dribbled")
      * @var int
      */
-    protected $keyPasses;
+    protected $wasDribbled;
     
     /**
      * @ORM\Column(type="smallint", options={"unsigned"=true}, name="interceptions")
@@ -212,12 +266,6 @@ class MatchPlayerStatistics
     protected $fouls;
     
     /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="won_contests")
-     * @var int
-     */
-    protected $wonContests;
-    
-    /**
      * @ORM\Column(type="smallint", options={"unsigned"=true}, name="was_fouled")
      * @var int
      */
@@ -240,43 +288,10 @@ class MatchPlayerStatistics
      * @var int
      */
     protected $offsides;
-    
-    /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_crosses")
-     * @var int
-     */
-    protected $totalCrosses;
-    
-    /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_crosses")
-     * @var int
-     */
-    protected $accurateCrosses;
-    
-    /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_long_balls")
-     * @var int
-     */
-    protected $totalLongBalls;
-    
-    /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_long_balls")
-     * @var int
-     */
-    protected $accurateLongBalls;
-    
-    /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="total_through_balls")
-     * @var int
-     */
-    protected $totalThroughBalls;
-    
-    /**
-     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="accurate_through_balls")
-     * @var int
-     */
-    protected $accurateThroughBalls;
-    
+
+
+
+
     /**
      * @ORM\Column(type="smallint", options={"unsigned"=true}, name="saves")
      * @var int
@@ -284,9 +299,58 @@ class MatchPlayerStatistics
     protected $saves;
 
     /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="claims")
+     * @var int
+     */
+    protected $claims;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="punches")
+     * @var int
+     */
+    protected $punches;
+
+
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="error_lead_goal")
+     * @var int
+     */
+    protected $errorLeadGoal;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="error_lead_shot")
+     * @var int
+     */
+    protected $errorLeadShot;
+
+
+
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="red_cards")
+     * @var int
+     */
+    protected $redCards;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="yellow_cards")
+     * @var int
+     */
+    protected $yellowCards;
+
+    /**
+     * @ORM\Column(type="smallint", options={"unsigned"=true}, name="second_yellow_cards")
+     * @var int
+     */
+    protected $secondYellowCards;
+
+
+    /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -297,12 +361,13 @@ class MatchPlayerStatistics
      * Set positionText
      *
      * @param string $positionText
+     *
      * @return MatchPlayerStatistics
      */
     public function setPositionText($positionText)
     {
         $this->positionText = $positionText;
-    
+
         return $this;
     }
 
@@ -319,20 +384,21 @@ class MatchPlayerStatistics
     /**
      * Set shirtNo
      *
-     * @param int $shirtNo
+     * @param integer $shirtNo
+     *
      * @return MatchPlayerStatistics
      */
     public function setShirtNo($shirtNo)
     {
         $this->shirtNo = $shirtNo;
-    
+
         return $this;
     }
 
     /**
      * Get shirtNo
      *
-     * @return int
+     * @return integer
      */
     public function getShirtNo()
     {
@@ -343,12 +409,13 @@ class MatchPlayerStatistics
      * Set gameStarted
      *
      * @param boolean $gameStarted
+     *
      * @return MatchPlayerStatistics
      */
     public function setGameStarted($gameStarted)
     {
         $this->gameStarted = $gameStarted;
-    
+
         return $this;
     }
 
@@ -365,20 +432,21 @@ class MatchPlayerStatistics
     /**
      * Set minsPlayed
      *
-     * @param int $minsPlayed
+     * @param integer $minsPlayed
+     *
      * @return MatchPlayerStatistics
      */
     public function setMinsPlayed($minsPlayed)
     {
         $this->minsPlayed = $minsPlayed;
-    
+
         return $this;
     }
 
     /**
      * Get minsPlayed
      *
-     * @return int
+     * @return integer
      */
     public function getMinsPlayed()
     {
@@ -389,12 +457,13 @@ class MatchPlayerStatistics
      * Set manOfTheMatch
      *
      * @param boolean $manOfTheMatch
+     *
      * @return MatchPlayerStatistics
      */
     public function setManOfTheMatch($manOfTheMatch)
     {
         $this->manOfTheMatch = $manOfTheMatch;
-    
+
         return $this;
     }
 
@@ -411,20 +480,21 @@ class MatchPlayerStatistics
     /**
      * Set substitutionType
      *
-     * @param int $substitutionType
+     * @param integer $substitutionType
+     *
      * @return MatchPlayerStatistics
      */
     public function setSubstitutionType($substitutionType)
     {
         $this->substitutionType = $substitutionType;
-    
+
         return $this;
     }
 
     /**
      * Get substitutionType
      *
-     * @return int
+     * @return integer
      */
     public function getSubstitutionType()
     {
@@ -434,20 +504,21 @@ class MatchPlayerStatistics
     /**
      * Set substitutionMinute
      *
-     * @param int $substitutionMinute
+     * @param integer $substitutionMinute
+     *
      * @return MatchPlayerStatistics
      */
     public function setSubstitutionMinute($substitutionMinute)
     {
         $this->substitutionMinute = $substitutionMinute;
-    
+
         return $this;
     }
 
     /**
      * Get substitutionMinute
      *
-     * @return int
+     * @return integer
      */
     public function getSubstitutionMinute()
     {
@@ -455,114 +526,47 @@ class MatchPlayerStatistics
     }
 
     /**
-     * Set formationPlace
+     * Set rating
      *
-     * @param int $formationPlace
+     * @param string $rating
+     *
      * @return MatchPlayerStatistics
      */
-    public function setFormationPlace($formationPlace)
+    public function setRating($rating)
     {
-        $this->formationPlace = $formationPlace;
-    
+        $this->rating = $rating;
+
         return $this;
     }
 
     /**
-     * Get formationPlace
+     * Get rating
      *
-     * @return int
+     * @return string
      */
-    public function getFormationPlace()
+    public function getRating()
     {
-        return $this->formationPlace;
-    }
-
-    /**
-     * Set overall_rating
-     *
-     * @param float $overallRating
-     * @return MatchPlayerStatistics
-     */
-    public function setOverallRating($overallRating)
-    {
-        $this->overall_rating = $overallRating;
-    
-        return $this;
-    }
-
-    /**
-     * Get overall_rating
-     *
-     * @return float
-     */
-    public function getOverallRating()
-    {
-        return $this->overall_rating;
-    }
-
-    /**
-     * Set offensive_rating
-     *
-     * @param float $offensiveRating
-     * @return MatchPlayerStatistics
-     */
-    public function setOffensiveRating($offensiveRating)
-    {
-        $this->offensive_rating = $offensiveRating;
-    
-        return $this;
-    }
-
-    /**
-     * Get offensive_rating
-     *
-     * @return float
-     */
-    public function getOffensiveRating()
-    {
-        return $this->offensive_rating;
-    }
-
-    /**
-     * Set defensive_rating
-     *
-     * @param float $defensiveRating
-     * @return MatchPlayerStatistics
-     */
-    public function setDefensiveRating($defensiveRating)
-    {
-        $this->defensive_rating = $defensiveRating;
-    
-        return $this;
-    }
-
-    /**
-     * Get defensive_rating
-     *
-     * @return float
-     */
-    public function getDefensiveRating()
-    {
-        return $this->defensive_rating;
+        return $this->rating;
     }
 
     /**
      * Set goalsScored
      *
-     * @param int $goalsScored
+     * @param integer $goalsScored
+     *
      * @return MatchPlayerStatistics
      */
     public function setGoalsScored($goalsScored)
     {
         $this->goalsScored = $goalsScored;
-    
+
         return $this;
     }
 
     /**
      * Get goalsScored
      *
-     * @return int
+     * @return integer
      */
     public function getGoalsScored()
     {
@@ -570,45 +574,47 @@ class MatchPlayerStatistics
     }
 
     /**
-     * Set assists
+     * Set ownGoalsScored
      *
-     * @param int $assists
+     * @param integer $ownGoalsScored
+     *
      * @return MatchPlayerStatistics
      */
-    public function setAssists($assists)
+    public function setOwnGoalsScored($ownGoalsScored)
     {
-        $this->assists = $assists;
-    
+        $this->ownGoalsScored = $ownGoalsScored;
+
         return $this;
     }
 
     /**
-     * Get assists
+     * Get ownGoalsScored
      *
-     * @return int
+     * @return integer
      */
-    public function getAssists()
+    public function getOwnGoalsScored()
     {
-        return $this->assists;
+        return $this->ownGoalsScored;
     }
 
     /**
      * Set totalShots
      *
-     * @param int $totalShots
+     * @param integer $totalShots
+     *
      * @return MatchPlayerStatistics
      */
     public function setTotalShots($totalShots)
     {
         $this->totalShots = $totalShots;
-    
+
         return $this;
     }
 
     /**
      * Get totalShots
      *
-     * @return int
+     * @return integer
      */
     public function getTotalShots()
     {
@@ -618,20 +624,21 @@ class MatchPlayerStatistics
     /**
      * Set shotsOnTarget
      *
-     * @param int $shotsOnTarget
+     * @param integer $shotsOnTarget
+     *
      * @return MatchPlayerStatistics
      */
     public function setShotsOnTarget($shotsOnTarget)
     {
         $this->shotsOnTarget = $shotsOnTarget;
-    
+
         return $this;
     }
 
     /**
      * Get shotsOnTarget
      *
-     * @return int
+     * @return integer
      */
     public function getShotsOnTarget()
     {
@@ -639,22 +646,71 @@ class MatchPlayerStatistics
     }
 
     /**
+     * Set blockedShots
+     *
+     * @param integer $blockedShots
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setBlockedShots($blockedShots)
+    {
+        $this->blockedShots = $blockedShots;
+
+        return $this;
+    }
+
+    /**
+     * Get blockedShots
+     *
+     * @return integer
+     */
+    public function getBlockedShots()
+    {
+        return $this->blockedShots;
+    }
+
+    /**
+     * Set shotsHitPost
+     *
+     * @param integer $shotsHitPost
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setShotsHitPost($shotsHitPost)
+    {
+        $this->shotsHitPost = $shotsHitPost;
+
+        return $this;
+    }
+
+    /**
+     * Get shotsHitPost
+     *
+     * @return integer
+     */
+    public function getShotsHitPost()
+    {
+        return $this->shotsHitPost;
+    }
+
+    /**
      * Set totalPasses
      *
-     * @param int $totalPasses
+     * @param integer $totalPasses
+     *
      * @return MatchPlayerStatistics
      */
     public function setTotalPasses($totalPasses)
     {
         $this->totalPasses = $totalPasses;
-    
+
         return $this;
     }
 
     /**
      * Get totalPasses
      *
-     * @return int
+     * @return integer
      */
     public function getTotalPasses()
     {
@@ -664,20 +720,21 @@ class MatchPlayerStatistics
     /**
      * Set accuratePasses
      *
-     * @param int $accuratePasses
+     * @param integer $accuratePasses
+     *
      * @return MatchPlayerStatistics
      */
     public function setAccuratePasses($accuratePasses)
     {
         $this->accuratePasses = $accuratePasses;
-    
+
         return $this;
     }
 
     /**
      * Get accuratePasses
      *
-     * @return int
+     * @return integer
      */
     public function getAccuratePasses()
     {
@@ -685,436 +742,23 @@ class MatchPlayerStatistics
     }
 
     /**
-     * Set duelWon
-     *
-     * @param int $duelWon
-     * @return MatchPlayerStatistics
-     */
-    public function setDuelWon($duelWon)
-    {
-        $this->duelWon = $duelWon;
-    
-        return $this;
-    }
-
-    /**
-     * Get duelWon
-     *
-     * @return int
-     */
-    public function getDuelWon()
-    {
-        return $this->duelWon;
-    }
-
-    /**
-     * Set duelLost
-     *
-     * @param int $duelLost
-     * @return MatchPlayerStatistics
-     */
-    public function setDuelLost($duelLost)
-    {
-        $this->duelLost = $duelLost;
-    
-        return $this;
-    }
-
-    /**
-     * Get duelLost
-     *
-     * @return int
-     */
-    public function getDuelLost()
-    {
-        return $this->duelLost;
-    }
-
-    /**
-     * Set aerialWon
-     *
-     * @param int $aerialWon
-     * @return MatchPlayerStatistics
-     */
-    public function setAerialWon($aerialWon)
-    {
-        $this->aerialWon = $aerialWon;
-    
-        return $this;
-    }
-
-    /**
-     * Get aerialWon
-     *
-     * @return int
-     */
-    public function getAerialWon()
-    {
-        return $this->aerialWon;
-    }
-
-    /**
-     * Set aerialLost
-     *
-     * @param int $aerialLost
-     * @return MatchPlayerStatistics
-     */
-    public function setAerialLost($aerialLost)
-    {
-        $this->aerialLost = $aerialLost;
-    
-        return $this;
-    }
-
-    /**
-     * Get aerialLost
-     *
-     * @return int
-     */
-    public function getAerialLost()
-    {
-        return $this->aerialLost;
-    }
-
-    /**
-     * Set touches
-     *
-     * @param int $touches
-     * @return MatchPlayerStatistics
-     */
-    public function setTouches($touches)
-    {
-        $this->touches = $touches;
-    
-        return $this;
-    }
-
-    /**
-     * Get touches
-     *
-     * @return int
-     */
-    public function getTouches()
-    {
-        return $this->touches;
-    }
-
-    /**
-     * Set totalTackles
-     *
-     * @param int $totalTackles
-     * @return MatchPlayerStatistics
-     */
-    public function setTotalTackles($totalTackles)
-    {
-        $this->totalTackles = $totalTackles;
-    
-        return $this;
-    }
-
-    /**
-     * Get totalTackles
-     *
-     * @return int
-     */
-    public function getTotalTackles()
-    {
-        return $this->totalTackles;
-    }
-
-    /**
-     * Set keyPasses
-     *
-     * @param int $keyPasses
-     * @return MatchPlayerStatistics
-     */
-    public function setKeyPasses($keyPasses)
-    {
-        $this->keyPasses = $keyPasses;
-    
-        return $this;
-    }
-
-    /**
-     * Get keyPasses
-     *
-     * @return int
-     */
-    public function getKeyPasses()
-    {
-        return $this->keyPasses;
-    }
-
-    /**
-     * Set interceptions
-     *
-     * @param int $interceptions
-     * @return MatchPlayerStatistics
-     */
-    public function setInterceptions($interceptions)
-    {
-        $this->interceptions = $interceptions;
-    
-        return $this;
-    }
-
-    /**
-     * Get interceptions
-     *
-     * @return int
-     */
-    public function getInterceptions()
-    {
-        return $this->interceptions;
-    }
-
-    /**
-     * Set totalClearances
-     *
-     * @param int $totalClearances
-     * @return MatchPlayerStatistics
-     */
-    public function setTotalClearances($totalClearances)
-    {
-        $this->totalClearances = $totalClearances;
-    
-        return $this;
-    }
-
-    /**
-     * Get totalClearances
-     *
-     * @return int
-     */
-    public function getTotalClearances()
-    {
-        return $this->totalClearances;
-    }
-
-    /**
-     * Set effectiveClearances
-     *
-     * @param int $effectiveClearances
-     * @return MatchPlayerStatistics
-     */
-    public function setEffectiveClearances($effectiveClearances)
-    {
-        $this->effectiveClearances = $effectiveClearances;
-    
-        return $this;
-    }
-
-    /**
-     * Get effectiveClearances
-     *
-     * @return int
-     */
-    public function getEffectiveClearances()
-    {
-        return $this->effectiveClearances;
-    }
-
-    /**
-     * Set shotsBlocked
-     *
-     * @param int $shotsBlocked
-     * @return MatchPlayerStatistics
-     */
-    public function setShotsBlocked($shotsBlocked)
-    {
-        $this->shotsBlocked = $shotsBlocked;
-    
-        return $this;
-    }
-
-    /**
-     * Get shotsBlocked
-     *
-     * @return int
-     */
-    public function getShotsBlocked()
-    {
-        return $this->shotsBlocked;
-    }
-
-    /**
-     * Set offsidesProvoked
-     *
-     * @param int $offsidesProvoked
-     * @return MatchPlayerStatistics
-     */
-    public function setOffsidesProvoked($offsidesProvoked)
-    {
-        $this->offsidesProvoked = $offsidesProvoked;
-    
-        return $this;
-    }
-
-    /**
-     * Get offsidesProvoked
-     *
-     * @return int
-     */
-    public function getOffsidesProvoked()
-    {
-        return $this->offsidesProvoked;
-    }
-
-    /**
-     * Set fouls
-     *
-     * @param int $fouls
-     * @return MatchPlayerStatistics
-     */
-    public function setFouls($fouls)
-    {
-        $this->fouls = $fouls;
-    
-        return $this;
-    }
-
-    /**
-     * Get fouls
-     *
-     * @return int
-     */
-    public function getFouls()
-    {
-        return $this->fouls;
-    }
-
-    /**
-     * Set wonContests
-     *
-     * @param int $wonContests
-     * @return MatchPlayerStatistics
-     */
-    public function setWonContests($wonContests)
-    {
-        $this->wonContests = $wonContests;
-    
-        return $this;
-    }
-
-    /**
-     * Get wonContests
-     *
-     * @return int
-     */
-    public function getWonContests()
-    {
-        return $this->wonContests;
-    }
-
-    /**
-     * Set wasFouled
-     *
-     * @param int $wasFouled
-     * @return MatchPlayerStatistics
-     */
-    public function setWasFouled($wasFouled)
-    {
-        $this->wasFouled = $wasFouled;
-    
-        return $this;
-    }
-
-    /**
-     * Get wasFouled
-     *
-     * @return int
-     */
-    public function getWasFouled()
-    {
-        return $this->wasFouled;
-    }
-
-    /**
-     * Set dispossessed
-     *
-     * @param int $dispossessed
-     * @return MatchPlayerStatistics
-     */
-    public function setDispossessed($dispossessed)
-    {
-        $this->dispossessed = $dispossessed;
-    
-        return $this;
-    }
-
-    /**
-     * Get dispossessed
-     *
-     * @return int
-     */
-    public function getDispossessed()
-    {
-        return $this->dispossessed;
-    }
-
-    /**
-     * Set turnovers
-     *
-     * @param int $turnovers
-     * @return MatchPlayerStatistics
-     */
-    public function setTurnovers($turnovers)
-    {
-        $this->turnovers = $turnovers;
-    
-        return $this;
-    }
-
-    /**
-     * Get turnovers
-     *
-     * @return int
-     */
-    public function getTurnovers()
-    {
-        return $this->turnovers;
-    }
-
-    /**
-     * Set offsides
-     *
-     * @param int $offsides
-     * @return MatchPlayerStatistics
-     */
-    public function setOffsides($offsides)
-    {
-        $this->offsides = $offsides;
-    
-        return $this;
-    }
-
-    /**
-     * Get offsides
-     *
-     * @return int
-     */
-    public function getOffsides()
-    {
-        return $this->offsides;
-    }
-
-    /**
      * Set totalCrosses
      *
-     * @param int $totalCrosses
+     * @param integer $totalCrosses
+     *
      * @return MatchPlayerStatistics
      */
     public function setTotalCrosses($totalCrosses)
     {
         $this->totalCrosses = $totalCrosses;
-    
+
         return $this;
     }
 
     /**
      * Get totalCrosses
      *
-     * @return int
+     * @return integer
      */
     public function getTotalCrosses()
     {
@@ -1124,20 +768,21 @@ class MatchPlayerStatistics
     /**
      * Set accurateCrosses
      *
-     * @param int $accurateCrosses
+     * @param integer $accurateCrosses
+     *
      * @return MatchPlayerStatistics
      */
     public function setAccurateCrosses($accurateCrosses)
     {
         $this->accurateCrosses = $accurateCrosses;
-    
+
         return $this;
     }
 
     /**
      * Get accurateCrosses
      *
-     * @return int
+     * @return integer
      */
     public function getAccurateCrosses()
     {
@@ -1147,20 +792,21 @@ class MatchPlayerStatistics
     /**
      * Set totalLongBalls
      *
-     * @param int $totalLongBalls
+     * @param integer $totalLongBalls
+     *
      * @return MatchPlayerStatistics
      */
     public function setTotalLongBalls($totalLongBalls)
     {
         $this->totalLongBalls = $totalLongBalls;
-    
+
         return $this;
     }
 
     /**
      * Get totalLongBalls
      *
-     * @return int
+     * @return integer
      */
     public function getTotalLongBalls()
     {
@@ -1170,20 +816,21 @@ class MatchPlayerStatistics
     /**
      * Set accurateLongBalls
      *
-     * @param int $accurateLongBalls
+     * @param integer $accurateLongBalls
+     *
      * @return MatchPlayerStatistics
      */
     public function setAccurateLongBalls($accurateLongBalls)
     {
         $this->accurateLongBalls = $accurateLongBalls;
-    
+
         return $this;
     }
 
     /**
      * Get accurateLongBalls
      *
-     * @return int
+     * @return integer
      */
     public function getAccurateLongBalls()
     {
@@ -1193,20 +840,21 @@ class MatchPlayerStatistics
     /**
      * Set totalThroughBalls
      *
-     * @param int $totalThroughBalls
+     * @param integer $totalThroughBalls
+     *
      * @return MatchPlayerStatistics
      */
     public function setTotalThroughBalls($totalThroughBalls)
     {
         $this->totalThroughBalls = $totalThroughBalls;
-    
+
         return $this;
     }
 
     /**
      * Get totalThroughBalls
      *
-     * @return int
+     * @return integer
      */
     public function getTotalThroughBalls()
     {
@@ -1216,20 +864,21 @@ class MatchPlayerStatistics
     /**
      * Set accurateThroughBalls
      *
-     * @param int $accurateThroughBalls
+     * @param integer $accurateThroughBalls
+     *
      * @return MatchPlayerStatistics
      */
     public function setAccurateThroughBalls($accurateThroughBalls)
     {
         $this->accurateThroughBalls = $accurateThroughBalls;
-    
+
         return $this;
     }
 
     /**
      * Get accurateThroughBalls
      *
-     * @return int
+     * @return integer
      */
     public function getAccurateThroughBalls()
     {
@@ -1237,22 +886,479 @@ class MatchPlayerStatistics
     }
 
     /**
+     * Set assists
+     *
+     * @param integer $assists
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setAssists($assists)
+    {
+        $this->assists = $assists;
+
+        return $this;
+    }
+
+    /**
+     * Get assists
+     *
+     * @return integer
+     */
+    public function getAssists()
+    {
+        return $this->assists;
+    }
+
+    /**
+     * Set keyPasses
+     *
+     * @param integer $keyPasses
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setKeyPasses($keyPasses)
+    {
+        $this->keyPasses = $keyPasses;
+
+        return $this;
+    }
+
+    /**
+     * Get keyPasses
+     *
+     * @return integer
+     */
+    public function getKeyPasses()
+    {
+        return $this->keyPasses;
+    }
+
+    /**
+     * Set touches
+     *
+     * @param integer $touches
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setTouches($touches)
+    {
+        $this->touches = $touches;
+
+        return $this;
+    }
+
+    /**
+     * Get touches
+     *
+     * @return integer
+     */
+    public function getTouches()
+    {
+        return $this->touches;
+    }
+
+    /**
+     * Set dribblesWon
+     *
+     * @param integer $dribblesWon
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setDribblesWon($dribblesWon)
+    {
+        $this->dribblesWon = $dribblesWon;
+
+        return $this;
+    }
+
+    /**
+     * Get dribblesWon
+     *
+     * @return integer
+     */
+    public function getDribblesWon()
+    {
+        return $this->dribblesWon;
+    }
+
+    /**
+     * Set dribblesLost
+     *
+     * @param integer $dribblesLost
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setDribblesLost($dribblesLost)
+    {
+        $this->dribblesLost = $dribblesLost;
+
+        return $this;
+    }
+
+    /**
+     * Get dribblesLost
+     *
+     * @return integer
+     */
+    public function getDribblesLost()
+    {
+        return $this->dribblesLost;
+    }
+
+    /**
+     * Set aerialWon
+     *
+     * @param integer $aerialWon
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setAerialWon($aerialWon)
+    {
+        $this->aerialWon = $aerialWon;
+
+        return $this;
+    }
+
+    /**
+     * Get aerialWon
+     *
+     * @return integer
+     */
+    public function getAerialWon()
+    {
+        return $this->aerialWon;
+    }
+
+    /**
+     * Set aerialLost
+     *
+     * @param integer $aerialLost
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setAerialLost($aerialLost)
+    {
+        $this->aerialLost = $aerialLost;
+
+        return $this;
+    }
+
+    /**
+     * Get aerialLost
+     *
+     * @return integer
+     */
+    public function getAerialLost()
+    {
+        return $this->aerialLost;
+    }
+
+    /**
+     * Set totalTackles
+     *
+     * @param integer $totalTackles
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setTotalTackles($totalTackles)
+    {
+        $this->totalTackles = $totalTackles;
+
+        return $this;
+    }
+
+    /**
+     * Get totalTackles
+     *
+     * @return integer
+     */
+    public function getTotalTackles()
+    {
+        return $this->totalTackles;
+    }
+
+    /**
+     * Set wasDribbled
+     *
+     * @param integer $wasDribbled
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setWasDribbled($wasDribbled)
+    {
+        $this->wasDribbled = $wasDribbled;
+
+        return $this;
+    }
+
+    /**
+     * Get wasDribbled
+     *
+     * @return integer
+     */
+    public function getWasDribbled()
+    {
+        return $this->wasDribbled;
+    }
+
+    /**
+     * Set interceptions
+     *
+     * @param integer $interceptions
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setInterceptions($interceptions)
+    {
+        $this->interceptions = $interceptions;
+
+        return $this;
+    }
+
+    /**
+     * Get interceptions
+     *
+     * @return integer
+     */
+    public function getInterceptions()
+    {
+        return $this->interceptions;
+    }
+
+    /**
+     * Set totalClearances
+     *
+     * @param integer $totalClearances
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setTotalClearances($totalClearances)
+    {
+        $this->totalClearances = $totalClearances;
+
+        return $this;
+    }
+
+    /**
+     * Get totalClearances
+     *
+     * @return integer
+     */
+    public function getTotalClearances()
+    {
+        return $this->totalClearances;
+    }
+
+    /**
+     * Set effectiveClearances
+     *
+     * @param integer $effectiveClearances
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setEffectiveClearances($effectiveClearances)
+    {
+        $this->effectiveClearances = $effectiveClearances;
+
+        return $this;
+    }
+
+    /**
+     * Get effectiveClearances
+     *
+     * @return integer
+     */
+    public function getEffectiveClearances()
+    {
+        return $this->effectiveClearances;
+    }
+
+    /**
+     * Set shotsBlocked
+     *
+     * @param integer $shotsBlocked
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setShotsBlocked($shotsBlocked)
+    {
+        $this->shotsBlocked = $shotsBlocked;
+
+        return $this;
+    }
+
+    /**
+     * Get shotsBlocked
+     *
+     * @return integer
+     */
+    public function getShotsBlocked()
+    {
+        return $this->shotsBlocked;
+    }
+
+    /**
+     * Set offsidesProvoked
+     *
+     * @param integer $offsidesProvoked
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setOffsidesProvoked($offsidesProvoked)
+    {
+        $this->offsidesProvoked = $offsidesProvoked;
+
+        return $this;
+    }
+
+    /**
+     * Get offsidesProvoked
+     *
+     * @return integer
+     */
+    public function getOffsidesProvoked()
+    {
+        return $this->offsidesProvoked;
+    }
+
+    /**
+     * Set fouls
+     *
+     * @param integer $fouls
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setFouls($fouls)
+    {
+        $this->fouls = $fouls;
+
+        return $this;
+    }
+
+    /**
+     * Get fouls
+     *
+     * @return integer
+     */
+    public function getFouls()
+    {
+        return $this->fouls;
+    }
+
+    /**
+     * Set wasFouled
+     *
+     * @param integer $wasFouled
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setWasFouled($wasFouled)
+    {
+        $this->wasFouled = $wasFouled;
+
+        return $this;
+    }
+
+    /**
+     * Get wasFouled
+     *
+     * @return integer
+     */
+    public function getWasFouled()
+    {
+        return $this->wasFouled;
+    }
+
+    /**
+     * Set dispossessed
+     *
+     * @param integer $dispossessed
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setDispossessed($dispossessed)
+    {
+        $this->dispossessed = $dispossessed;
+
+        return $this;
+    }
+
+    /**
+     * Get dispossessed
+     *
+     * @return integer
+     */
+    public function getDispossessed()
+    {
+        return $this->dispossessed;
+    }
+
+    /**
+     * Set turnovers
+     *
+     * @param integer $turnovers
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setTurnovers($turnovers)
+    {
+        $this->turnovers = $turnovers;
+
+        return $this;
+    }
+
+    /**
+     * Get turnovers
+     *
+     * @return integer
+     */
+    public function getTurnovers()
+    {
+        return $this->turnovers;
+    }
+
+    /**
+     * Set offsides
+     *
+     * @param integer $offsides
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setOffsides($offsides)
+    {
+        $this->offsides = $offsides;
+
+        return $this;
+    }
+
+    /**
+     * Get offsides
+     *
+     * @return integer
+     */
+    public function getOffsides()
+    {
+        return $this->offsides;
+    }
+
+    /**
      * Set saves
      *
-     * @param int $saves
+     * @param integer $saves
+     *
      * @return MatchPlayerStatistics
      */
     public function setSaves($saves)
     {
         $this->saves = $saves;
-    
+
         return $this;
     }
 
     /**
      * Get saves
      *
-     * @return int
+     * @return integer
      */
     public function getSaves()
     {
@@ -1260,15 +1366,184 @@ class MatchPlayerStatistics
     }
 
     /**
+     * Set claims
+     *
+     * @param integer $claims
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setClaims($claims)
+    {
+        $this->claims = $claims;
+
+        return $this;
+    }
+
+    /**
+     * Get claims
+     *
+     * @return integer
+     */
+    public function getClaims()
+    {
+        return $this->claims;
+    }
+
+    /**
+     * Set punches
+     *
+     * @param integer $punches
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setPunches($punches)
+    {
+        $this->punches = $punches;
+
+        return $this;
+    }
+
+    /**
+     * Get punches
+     *
+     * @return integer
+     */
+    public function getPunches()
+    {
+        return $this->punches;
+    }
+
+    /**
+     * Set errorLeadGoal
+     *
+     * @param integer $errorLeadGoal
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setErrorLeadGoal($errorLeadGoal)
+    {
+        $this->errorLeadGoal = $errorLeadGoal;
+
+        return $this;
+    }
+
+    /**
+     * Get errorLeadGoal
+     *
+     * @return integer
+     */
+    public function getErrorLeadGoal()
+    {
+        return $this->errorLeadGoal;
+    }
+
+    /**
+     * Set errorLeadShot
+     *
+     * @param integer $errorLeadShot
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setErrorLeadShot($errorLeadShot)
+    {
+        $this->errorLeadShot = $errorLeadShot;
+
+        return $this;
+    }
+
+    /**
+     * Get errorLeadShot
+     *
+     * @return integer
+     */
+    public function getErrorLeadShot()
+    {
+        return $this->errorLeadShot;
+    }
+
+    /**
+     * Set redCards
+     *
+     * @param integer $redCards
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setRedCards($redCards)
+    {
+        $this->redCards = $redCards;
+
+        return $this;
+    }
+
+    /**
+     * Get redCards
+     *
+     * @return integer
+     */
+    public function getRedCards()
+    {
+        return $this->redCards;
+    }
+
+    /**
+     * Set yellowCards
+     *
+     * @param integer $yellowCards
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setYellowCards($yellowCards)
+    {
+        $this->yellowCards = $yellowCards;
+
+        return $this;
+    }
+
+    /**
+     * Get yellowCards
+     *
+     * @return integer
+     */
+    public function getYellowCards()
+    {
+        return $this->yellowCards;
+    }
+
+    /**
+     * Set secondYellowCards
+     *
+     * @param integer $secondYellowCards
+     *
+     * @return MatchPlayerStatistics
+     */
+    public function setSecondYellowCards($secondYellowCards)
+    {
+        $this->secondYellowCards = $secondYellowCards;
+
+        return $this;
+    }
+
+    /**
+     * Get secondYellowCards
+     *
+     * @return integer
+     */
+    public function getSecondYellowCards()
+    {
+        return $this->secondYellowCards;
+    }
+
+    /**
      * Set player
      *
      * @param Player $player
+     *
      * @return MatchPlayerStatistics
      */
-    public function setPlayer(Player $player)
+    public function setPlayer(Player $player = null)
     {
         $this->player = $player;
-    
+
         return $this;
     }
 
@@ -1286,12 +1561,13 @@ class MatchPlayerStatistics
      * Set match
      *
      * @param Match $match
+     *
      * @return MatchPlayerStatistics
      */
-    public function setMatch(Match $match)
+    public function setMatch(Match $match = null)
     {
         $this->match = $match;
-    
+
         return $this;
     }
 

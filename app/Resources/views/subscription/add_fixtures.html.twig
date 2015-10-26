@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        {% form_theme form 'form/form_layout.html.twig' %}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="row">
+            <div class="four columns">
+                {{ form_row(form.stage, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="four columns">
+                {{ form_row(form.startweek, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="four columns">
+                {{ form_row(form.endweek, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+        </div>
+        <input type="submit" class="button-primary" value="Save" />
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

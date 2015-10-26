@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <table class="u-full-width bordered">
+            <thead>
+                <th>Name</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                {% for stage in stages %}
+                    <tr>
+                        <td>{{ stage.name }}</td>
+                        <td>{{ stage.wsid }}</td>
+                    </tr>
+                {%  else %}
+                    <tr><td colspan="2">No stages found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a class="button button-primary" href="{{ path('create_stage') }}">Add stages</a>
+    </div>
+{% endblock %}

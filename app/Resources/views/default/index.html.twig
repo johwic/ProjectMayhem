@@ -3,5 +3,11 @@
 {% block body %}
     <div class="container">
         <h1>Welcome to Project Mayhem!</h1>
+
+        {% for flashMessage in app.session.flashbag.get('notice') %}
+            <div class="box success">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}

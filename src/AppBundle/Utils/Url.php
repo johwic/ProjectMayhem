@@ -46,6 +46,7 @@ class Url
         'match-centre2' => '/matchesfeed/{id}/MatchCentre2',
         'player-tournament-history-stat' => '/stageplayerstatfeed/{playerId}/PlayerHistoryTournamentStats',
         'player-stats' => '/StatisticsFeed/1/GetPlayerStatistics',
+        'team-stats' => '/StatisticsFeed/1/GetTeamStatistics',
         'season' => '/Regions/{r}/Tournaments/{t}/',
         'stages' => '/Regions/{r}/Tournaments/{t}/Seasons/{s}'
     ];

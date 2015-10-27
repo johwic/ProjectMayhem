@@ -37,11 +37,18 @@ class StatBuilder {
         }
     }
 
+    public function prepareEvents($events)
+    {
+        foreach ($events as $event) {
+            $this->add($event);
+        }
+    }
+
     public function getMinutesPlayed($playerId, $started)
     {
         $index = 0;
         foreach ($this->filters as $filterIndex => $filter) {
-            if ($filter->filterName == "SubstitutionMinute") {
+            if ($filter->filterName == 'SubstitutionMinute') {
                 $index = $filterIndex;
                 continue;
             }
@@ -78,11 +85,11 @@ class StatBuilder {
     public function getFilterValue($filterIndex, $playerId)
     {
         if (isset($this->groupedEventsByPlayer[$playerId][$filterIndex])) {
-            if (isset($this->filters[$filterIndex]->value)) return $this->filters[$filterIndex]->value;
             if (isset($this->filters[$filterIndex]->return)) return $this->groupedEventsByPlayer[$playerId][$filterIndex][0]->{$this->filters[$filterIndex]->return} + 1;
 
             return count($this->groupedEventsByPlayer[$playerId][$filterIndex]);
         }
+
         return 0;
     }
 }

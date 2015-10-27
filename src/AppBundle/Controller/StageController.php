@@ -26,9 +26,9 @@ class StageController extends Controller
      */
     public function stageDetailAction(Stage $stage)
     {
-        $this->get('app.whoscored')->getStageTeams($stage);
+        $matches = $this->get('doctrine.orm.entity_manager')->getRepository('AppBundle:Match')->findBy(array('stage' => $stage), array('time' => 'DESC'));
 
-        return $this->render('stage/stage_details.html.twig', array('stages' => $stages));
+        return $this->render('stage/stage_details.html.twig', array('matches' => $matches));
     }
 
     /**

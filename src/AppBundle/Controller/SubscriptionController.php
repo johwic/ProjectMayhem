@@ -10,11 +10,8 @@ use AppBundle\Form\Type\SeasonType;
 use AppBundle\Form\Type\StageType;
 use AppBundle\Form\Type\FixtureType;
 use AppBundle\Entity\Season;
-use AppBundle\Entity\Stage;
+use AppBundle\Entity\Match;
 use AppBundle\Utils\SubscriptionManager;
-
-use DateTime;
-use DateTimeZone;
 
 class SubscriptionController extends Controller
 {
@@ -78,14 +75,15 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * @Route("/matches", name="matches")
+     * @Route("/matches/{id}/get-data", name="get_match_data")
      */
-    public function matchAction()
+    public function matchAction(Match $match)
     {
-        $match = $this->getDoctrine()->getManager()->getRepository('AppBundle:Match')->findOneById(1);
-        $sm = new SubscriptionManager($this->get('app.whoscored'), $this->getDoctrine()->getManager());
+        $sm = new SubscriptionManager($this->get('app.whoscored'), $this->get('doctrine.orm.entity_manager'));
         $sm->getMatchData($match);
 
-        return $this->render('default/index.html.twig', array());
+        $this->addFlash('notice', 'Downloaded match data for match with WhoScored ID ' . $match->getWsId());
+
+        return $this->redirectToRoute('homepage');
     }
 }

@@ -154,17 +154,15 @@
   },
 
   {
-    "filterName" : "Substitution On",
+    "filterName" : "SubOn",
     "satisfier" : [{"func" : "hasSatisfier", "value" : "subOn"}],
-    "callback"  : "setSubstitutionType",
-    "value"     : 2
+    "callback"  : "setSubOn"
   },
 
   {
-    "filterName" : "Substitution Off",
+    "filterName" : "SubOff",
     "satisfier" : [{"func" : "hasSatisfier", "value" : "subOff"}],
-    "callback"  : "setSubstitutionType",
-    "value"     : 1
+    "callback"  : "setSubOff"
   },
 
   {

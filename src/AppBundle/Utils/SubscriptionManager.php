@@ -6,6 +6,7 @@ use AppBundle\Entity\MatchPlayerStatistics;
 use AppBundle\Entity\Player;
 use AppBundle\Entity\Stage;
 use AppBundle\Entity\Match;
+use AppBundle\Entity\MatchEvent;
 use AppBundle\Entity\Region;
 use AppBundle\Entity\Team;
 use AppBundle\Entity\Tournament;
@@ -20,6 +21,7 @@ class SubscriptionManager
 {
     private $whoscored;
     private $em;
+    private $players = array();
 
     public function __construct(WhoscoredProvider $whoscored, EntityManager $em)
     {
@@ -29,7 +31,11 @@ class SubscriptionManager
 
     public function getFixtures(Stage $stage, $week)
     {
-        $fixtures = $this->whoscored->loadStatistics('stagefixtures', array('stageId' => $stage->getWsId(), 'd' => $week, 'isAggregate' => false));
+        try {
+            $fixtures = $this->whoscored->loadStatistics('stagefixtures', array('stageId' => $stage->getWsId(), 'd' => $week, 'isAggregate' => false));
+        } catch (\Exception $e) {
+            $fixtures = array();
+        }
         $rows_affected = 0;
 
         foreach ($fixtures as $fixture) {
@@ -37,8 +43,8 @@ class SubscriptionManager
             $count = $this->em->createQuery('SELECT COUNT(m) FROM AppBundle:Match m WHERE m.wsId = :id')->setParameter(':id', $matchId)->getSingleScalarResult();
             if ($count == 1) continue;
 
-            $homeTeam = $this->em->getRepository('AppBundle:Team')->findOneByWsId($fixture[4]);
-            $awayTeam = $this->em->getRepository('AppBundle:Team')->findOneByWsId($fixture[7]);
+            $homeTeam = $this->getTeam($fixture[4]);
+            $awayTeam = $this->getTeam($fixture[7]);
 
             $match = new Match();
             $match->setStage($stage);
@@ -60,72 +66,199 @@ class SubscriptionManager
 
     public function getMatchData(Match $match)
     {
-        $rawMatchData = $this->whoscored->loadStatistics('match-centre2', array('id' => $match->getWsId()));
-        $matchData = json_decode($rawMatchData);
-        $stage = $match->getStage();
-
-        $statBuilder = new StatBuilder();
-        foreach ($matchData->events as $event) {
-            $statBuilder->add($event);
+        try {
+            $matchData = $this->whoscored->loadStatistics('match-centre2', array('id' => $match->getWsId()));
+            $incidents = $this->whoscored->loadStatistics('match-live-update', array('id' => $match->getWsId()));
+        } catch (\Exception $e) {
+            throw $e;
         }
 
-        $playersConcat = array($matchData->home->players, $matchData->away->players);
-        $teams = array($match->getHomeTeam(), $match->getAwayTeam());
-        foreach ($playersConcat as $index => $players) {
+        $stage = $match->getStage();
+        $homeTeam = $match->getHomeTeam();
+        $awayTeam = $match->getAwayTeam();
+
+        $this->getSquads($homeTeam);
+        $this->getSquads($awayTeam);
+
+        $statBuilder = new StatBuilder();
+        $statBuilder->prepareEvents($matchData->events);
+
+        foreach ($incidents[0][1][0] AS $event) {
+            foreach([1,2] as $index) {
+                foreach ($event[$index] AS $incident) {
+                    $incidentType = $incident[2];
+                    $info = ($incident[4]) ? $incident[4] : '';
+                    $minute = $incident[5];
+                    $player = $this->getPlayer($incident[6]);
+                    $runningScore = ($incident[3]) ? $incident[3] : '';
+                    if ($incident[7]) {
+                        $participatingPlayer = $this->getPlayer($incident[7]);
+                    } else {
+                        $participatingPlayer = null;
+                    }
+
+                    $matchIncident = new MatchEvent();
+                    $matchIncident->setPlayer($player);
+                    $matchIncident->setInfo($info);
+                    $matchIncident->setEventType($incidentType);
+                    $matchIncident->setMatch($match);
+                    $matchIncident->setParticipatingPlayer($participatingPlayer);
+                    $matchIncident->setSide($index);
+                    $matchIncident->setMinute($minute);
+                    $matchIncident->setRunningScore($runningScore);
+
+                    $this->em->persist($matchIncident);
+                }
+            }
+        }
+
+        foreach (['home', 'away'] as $side) {
+            $team = ($side === 'home') ? $homeTeam : $awayTeam;
+            $players = $matchData->{$side}->players;
+
             foreach ($players as $player) {
-                $p = $this->getPlayer($player->playerId, $teams[$index]);
-                $pms = new MatchPlayerStatistics();
+                if (($p = $this->getPlayer($player->playerId, $team)) == null) {
+                    $p = new Player();
+
+                    $p->setFirstName(null);
+                    $p->setLastName(null);
+                    $p->setKnownName($player->name);
+                    $p->setAge($player->age);
+                    $p->setWsId($player->playerId);
+                    $p->setTeam($team);
+
+                    $this->players[$player->playerId] = $p;
+
+                    $this->em->persist($p);
+                }
+                $mps = new MatchPlayerStatistics();
 
                 foreach ($statBuilder->filters as $filterIndex => $filter) {
-                    $pms->{$statBuilder->filters[$filterIndex]->callback}($statBuilder->getFilterValue($filterIndex, $player->playerId));
+                    $mps->{$filter->callback}($statBuilder->getFilterValue($filterIndex, $player->playerId));
                 }
 
-                $pms->setPlayer($p);
-                $pms->setMatch($match);
+                $mps->setPlayer($p);
+                $mps->setMatch($match);
                 if (isset($player->isFirstEleven) && $player->isFirstEleven == true) {
                     $started = 1;
                 } else {
                     $started = 0;
                 }
-                $pms->setGameStarted($started);
-                $pms->setManOfTheMatch(($player->isManOfTheMatch) ? 1 : 0);
-                $pms->setPositionText($player->position);
-                $pms->setShirtNo($player->shirtNo);
-                $pms->setMinsPlayed($statBuilder->getMinutesPlayed($player->playerId, $started));
+                $mps->setGameStarted($started);
+                $mps->setManOfTheMatch(($player->isManOfTheMatch) ? 1 : 0);
+                $mps->setPositionText($player->position);
+                $mps->setShirtNo(isset($player->shirtNo) ? $player->shirtNo : 0);
+                $mps->setMinsPlayed($statBuilder->getMinutesPlayed($player->playerId, $started));
 
                 if (isset($player->stats->ratings)) {
                     foreach ($player->stats->ratings as $rating) {
-                        $pms->setRating($rating);
+                        $mps->setRating($rating);
                     }
                 } else {
-                    $pms->setRating(0);
+                    $mps->setRating(0);
                 }
 
                 if ($p->getId() !== null) {
-                    $sps = $this->em->createQuery('SELECT s FROM AppBundle:StagePlayerStatistics s WHERE s.stage = :stage AND s.player = :player AND s.team = :team')
-                        ->setParameters(array('stage' => $stage, 'player' => $p, 'team' => $teams[$index]))
-                        ->getSingleResult();
-                } else {
+                    $sps = $this->em->getRepository('AppBundle:StagePlayerStatistics')->findOneBy(array('stage' => $stage, 'team' => $team, 'player' => $p));
+                }
+
+                if (!isset($sps)) {
                     $sps = new StagePlayerStatistics();
                     $sps->setPlayer($p);
                     $sps->setStage($stage);
-                    $sps->setTeam($teams[$index]);
+                    $sps->setTeam($team);
                 }
 
-                $sps->addMatchStatistics($pms);
+                $sps->addMatchStatistics($mps);
 
                 $this->em->persist($sps);
-                $this->em->persist($pms);
+                $this->em->persist($mps);
+
+                unset($sps);
+                unset($mps);
             }
         }
 
+        $match->setStatus(1);
         $this->em->flush();
     }
 
-    public function getPlayer($wsId, Team $team)
+    private function getPlayer($wsId, Team $team = null)
     {
-        $player = $this->em->getRepository('AppBundle:Player')->findOneByWsId($wsId);
+        if (array_key_exists($wsId, $this->players)) {
+            $player = $this->players[$wsId];
+        } else {
+            $player = $this->em->getRepository('AppBundle:Player')->findOneByWsId($wsId);
+        }
 
+        if ($player == null) {
+            $params = array(
+                'age' => '',
+                'ageComparisonType' => '',
+                'appearances' => '',
+                'appearancesComparisonType' => '',
+                'category' => 'summary',
+                'field' => 'Overall',
+                'includeZeroValues' => 'true',
+                'isCurrent' => 'true',
+                'isMinApp' => 'false',
+                'matchId' => '',
+                'nationality' => '',
+                'numberOfPlayersToPick' => '',
+                'page' => '',
+                'playerId' => $wsId,
+                'positionOptions' => '',
+                'sotAscending' => '',
+                'sortBy' => 'Rating',
+                'stageId' => '',
+                'statsAccumulationType' => 0,
+                'subcategory' => 'all',
+                'teamIds' => '',
+                'timeOfTheGameEnd' => '',
+                'timeOfTheGameStart' => '',
+                'tournamentOptions' => ''
+            );
+
+            try {
+                $data = $this->whoscored->loadStatistics('player-stats', $params);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            if (empty($data->playerTableStats)) return null;//throw new \Exception('No player data found');
+
+            $player = new Player();
+
+            $player->setFirstName($data->playerTableStats[0]->firstName);
+            $player->setLastName($data->playerTableStats[0]->lastName);
+            $player->setKnownName($data->playerTableStats[0]->name);
+            $player->setAge($data->playerTableStats[0]->age);
+            $player->setWsId($wsId);
+
+        }
+
+        if ($team !== null && $player->getTeam() !== $team) {
+            $ret = $team;
+            try {
+                $teamId = $this->whoscored->getActiveTeam($wsId);
+                $ret = $this->getTeam($teamId);
+                $player->setTeam($ret);
+            } catch (\Exception $e) {
+
+            } finally {
+                $player->setTeam($ret);
+            }
+        }
+
+        $this->players[$wsId] = $player;
+
+        $this->em->persist($player);
+
+        return $player;
+    }
+
+    public function getSquads(Team $team)
+    {
         $params = array(
             'age' => '',
             'ageComparisonType' => '',
@@ -140,47 +273,64 @@ class SubscriptionManager
             'nationality' => '',
             'numberOfPlayersToPick' => '',
             'page' => '',
-            'playerId' => $wsId,
+            'playerId' => '',
             'positionOptions' => '',
             'sotAscending' => '',
             'sortBy' => 'Rating',
             'stageId' => '',
             'statsAccumulationType' => 0,
             'subcategory' => 'all',
-            'teamIds' => '',
+            'teamIds' => $team->getWsId(),
             'timeOfTheGameEnd' => '',
             'timeOfTheGameStart' => '',
             'tournamentOptions' => ''
         );
 
-        $playerData = $this->whoscored->loadStatistics('player-stats', $params);
-
-        $data = json_decode($playerData);
-
-        if ($data == null) {
-            sleep(1);
-            $playerData = $this->whoscored->loadStatistics('player-stats', $params);
-
-            $data = json_decode($playerData);
+        try {
+            $data = $this->whoscored->loadStatistics('player-stats', $params);
+        } catch (\Exception $e) {
+            throw $e;
         }
 
-        if ($player == null) {
-            $player = new Player();
+        if (empty($data->playerTableStats)) throw new \Exception('No player data found');
 
-            $player->setFirstName($data->playerTableStats[0]->firstName);
-            $player->setLastName($data->playerTableStats[0]->lastName);
-            $player->setKnownName($data->playerTableStats[0]->name);
-            $player->setAge($data->playerTableStats[0]->age);
-            $player->setWsId($wsId);
+        foreach ($data->playerTableStats as $playerData) {
+            $player = null;
+            if (array_key_exists($playerData->playerId, $this->players)) {
+                $player = $this->players[$playerData->playerId];
+            } else {
+                $player = $this->em->getRepository('AppBundle:Player')->findOneByWsId($playerData->playerId);
+            }
+
+            if ($player == null) {
+                $player = new Player();
+
+                $player->setFirstName($playerData->firstName);
+                $player->setLastName($playerData->lastName);
+                $player->setKnownName($playerData->name);
+                $player->setAge($playerData->age);
+                $player->setWsId($playerData->playerId);
+
+                if ($playerData->isActive == false) {
+                    $teamId = $this->whoscored->getActiveTeam($playerData->playerId);
+                    try {
+                        $ret = $this->getTeam($teamId);
+                        $player->setTeam($ret);
+                    } catch (\Exception $e) {
+
+                    }
+
+                } else {
+                    $player->setTeam($team);
+                }
+
+                $this->em->persist($player);
+            }
+
+            $this->players[$playerData->playerId] = $player;
         }
 
-        //if ($data->playerTableStats[0]->isActive) {
-            $player->setTeam($team);
-        //}
-
-        $this->em->persist($player);
-
-        return $player;
+        $this->em->flush();
     }
 
     public function getTeam($wsId)
@@ -207,15 +357,22 @@ class SubscriptionManager
                 'tournamentOptions' => ''
             );
 
-            $teamData = json_decode($this->whoscored->loadStatistics('team-stats', $params));
+            try {
+                $teamData = $this->whoscored->loadStatistics('team-stats', $params);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            if (empty($teamData->teamTableStats)) throw new \Exception('No team data found');
 
             $team = new Team();
             $team->setWsId($teamData->teamTableStats[0]->teamId);
             $team->setName($teamData->teamTableStats[0]->teamName);
+
             $this->em->persist($team);
         }
-        dump($team);
-        die();
+
+        return $team;
     }
 
     public function getRegions()
@@ -248,6 +405,7 @@ class SubscriptionManager
         $teams = $this->whoscored->loadStatistics('regionteams', array('id' => $region->getWsId()));
 
         foreach ( $teams as $team ) {
+            if ($this->em->getRepository('AppBundle:Team')->findOneByWsId($team[0]) !== null) continue;
             $ret = new Team();
             $ret->setWsId($team[0]);
             $ret->setName($team[1]);

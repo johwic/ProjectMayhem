@@ -1,0 +1,59 @@
+[
+
+  {
+    "filterName" : "Assists",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "assist"}],
+    "callback"  : "setAssists"
+  },
+  {
+    "filterName" : "Goals",
+    "satisfier" : [{"func" : "isOfType", "value" : 16}, {"func" : "hasNotSatisfier", "value" : "goalOwn"}],
+    "callback"  : "setGoalsScored"
+  },
+
+  {
+    "filterName" : "OwnGoals",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "goalOwn"}],
+    "callback"  : "setOwnGoalsScored"
+  },
+
+  {
+    "filterName" : "Substitution On",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "subOn"}],
+    "callback"  : "setSubstitutionType",
+    "value"     : 2
+  },
+
+  {
+    "filterName" : "Substitution Off",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "subOff"}],
+    "callback"  : "setSubstitutionType",
+    "value"     : 1
+  },
+
+  {
+    "filterName" : "SubstitutionMinute",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["subOff", "subOn"]}],
+    "callback"  : "setSubstitutionMinute",
+    "return"    : "minute"
+  },
+
+
+  {
+    "filterName" : "Yellow Cards",
+    "satisfier" : [{"func" : "hasAnySatisfier", "value" : ["yellowCard", "voidYellowCard"]}],
+    "callback"  : "setYellowCards"
+  },
+
+  {
+    "filterName" : "Second Yellow Cards",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "secondYellow"}],
+    "callback"  : "setSecondYellowCards"
+  },
+
+  {
+    "filterName" : "Red Cards",
+    "satisfier" : [{"func" : "hasSatisfier", "value" : "redCard"}],
+    "callback"  : "setRedCards"
+  }
+]

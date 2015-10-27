@@ -2,7 +2,6 @@
 
 namespace AppBundle\Utils;
 
-use AppBundle\Entity\Stage;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +14,12 @@ class WhoscoredProvider
 {
     private $em;
     private $cache;
+    private $timer;
 
     public function __construct(EntityManager $em, FilesystemCache $cache) {
         $this->em = $em;
         $this->cache = $cache;
-        $this->cache->setNamespace('whoscored.cache');
+        $this->timer = 0;
     }
 
     public function getSeasonIds($id)
@@ -33,7 +33,15 @@ class WhoscoredProvider
         if (false === ($content = $this->cache->fetch($cache_key))) {
             $req = Request::create(Url::get('season', array('r' => $r, 't' => $t)), 'GET');
             $remoteKernel = new RemoteHttpKernel();
-            $response = $remoteKernel->handle($req);
+            try {
+                $response = $remoteKernel->handle($req);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            $code = $response->getStatusCode();
+
+            if ($code !== 200) throw new \Exception($response->getContent(), $code);
 
             $crawler = new Crawler($response->getContent());
             $content = $crawler->filter('#seasons > option')->each(function (Crawler $node, $i) {
@@ -41,7 +49,7 @@ class WhoscoredProvider
                 return array('wsid' => $matches[1], 'name' => $node->text());
             });
 
-            if ($response->getStatusCode() == 200) $this->cache->save($cache_key, $content, 3600*24);
+            $this->cache->save($cache_key, $content, 3600*24);
         }
 
         return $content;
@@ -58,7 +66,16 @@ class WhoscoredProvider
         if (false === ($content = $this->cache->fetch($cache_key))) {
             $req = Request::create(Url::get('stages', array('r' => $r, 't' => $t, 's' => $s)), 'GET');
             $remoteKernel = new RemoteHttpKernel();
-            $response = $remoteKernel->handle($req);
+
+            try {
+                $response = $remoteKernel->handle($req);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            $code = $response->getStatusCode();
+
+            if ($code !== 200) throw new \Exception($response->getContent(), $code);
 
             $crawler = new Crawler($response->getContent());
             $content = $crawler->filter('#stages > option')->each(function (Crawler $node, $i) {
@@ -72,14 +89,44 @@ class WhoscoredProvider
                 $content = array(array('wsid' => $matches[1], 'name' => ''));
             }
 
-            if ($response->getStatusCode() == 200) $this->cache->save($cache_key, $content, 3600*24);
+            $this->cache->save($cache_key, $content, 3600*24);
         }
+
         return $content;
     }
 
-    public function getStageTeams(Stage $stage)
+    public function getActiveTeam($playerId)
     {
+        $cache_key = 'activeteam_' . $playerId;
 
+        if (false === ($content = $this->cache->fetch($cache_key))) {
+            $req = Request::create(Url::get('player', array('p' => $playerId)), 'GET');
+
+            $remoteKernel = new RemoteHttpKernel();
+            try {
+                $response = $remoteKernel->handle($req);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            $code = $response->getStatusCode();
+            $content = $response->getContent();
+
+            if ($code !== 200) throw new \Exception($content, $code);
+
+            $crawler = new Crawler($content);
+            $node = $crawler->filter('dd > a[class="team-link"]');
+            if (empty($node->attr('href'))) throw new \Exception('Team id not found');
+
+            preg_match('/Teams\/(\d+)/', $node->attr('href'), $matches);
+            $content = $matches[1];
+
+            $this->cache->save($cache_key, $content, 3600*24*7);
+        }
+
+        if (!ctype_digit(strval($content))) throw new \Exception('No integer');
+
+        return $content;
     }
 
     /**
@@ -92,7 +139,11 @@ class WhoscoredProvider
      */
     public function loadStatistics($key, $param)
     {
-        $cache_key = $key . http_build_query($param);
+        ksort($param);
+        $cache_key = $key;
+        foreach ($param as $val) {
+            if (!empty($val)) $cache_key .= '_' . $val;
+        }
         $code = 201;
 
         if (false === ($content = $this->cache->fetch($cache_key))) {
@@ -117,11 +168,13 @@ class WhoscoredProvider
 
             $remoteKernel = new RemoteHttpKernel($generator);
             try {
+                if ((microtime(true) - $this->timer) < 2) sleep(1);
                 $response = $remoteKernel->handle($req);
             } catch (\Exception $e) {
                 throw $e;
             }
 
+            $this->timer = microtime(true);
             $code = $response->getStatusCode();
             $content = $response->getContent();
 
@@ -131,7 +184,7 @@ class WhoscoredProvider
         }
 
         if (Url::isArray($key)) {
-            $content = str_replace(array(',,', ',,', '"', "\'"), array(',null,', ',null,', '\"', "'"), $content);
+            $content = str_replace(array(',,', ',,', '"', "\'", ",]"), array(',null,', ',null,', '\"', "'", ",null]"), $content);
             $content = preg_replace("/'(.*?)'(\s*[,\]])/", '"$1"$2', $content);
         }
 

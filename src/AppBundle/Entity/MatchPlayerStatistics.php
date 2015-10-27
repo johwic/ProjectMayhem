@@ -1580,4 +1580,21 @@ class MatchPlayerStatistics
     {
         return $this->match;
     }
+
+
+    public function setSubOn($value)
+    {
+        $this->setSubstitutionType(0);
+
+        if ($value !== 0) {
+            $this->setSubstitutionType(2);
+        }
+    }
+
+    public function setSubOff($value)
+    {
+        if ($value !== 0) {
+            $this->setSubstitutionType(1);
+        }
+    }
 }

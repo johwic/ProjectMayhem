@@ -48,7 +48,8 @@ class Url
         'player-stats' => '/StatisticsFeed/1/GetPlayerStatistics',
         'team-stats' => '/StatisticsFeed/1/GetTeamStatistics',
         'season' => '/Regions/{r}/Tournaments/{t}/',
-        'stages' => '/Regions/{r}/Tournaments/{t}/Seasons/{s}'
+        'stages' => '/Regions/{r}/Tournaments/{t}/Seasons/{s}',
+        'player' => '/Players/{p}/'
     ];
 
     public static function get($key, $parameters = [])
@@ -65,7 +66,7 @@ class Url
         return $url;
     }
 
-    public static function queryString($parameters)
+    private static function queryString($parameters)
     {
         if (empty($parameters)) {
             return '';
@@ -84,8 +85,8 @@ class Url
 
     public static function isArray($key)
     {
-        $arr = array('stagefixtures');
+        $arr = array('stagefixtures', 'match-live-update', 'live-player-stats', 'regionteams');
 
-        return in_array($key, $arr) ? true : false;
+        return in_array($key, $arr);
     }
 }

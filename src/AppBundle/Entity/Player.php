@@ -31,13 +31,13 @@ class Player
     protected $team;
     
     /**
-     * @ORM\Column(type="string", length=255, name="first_name")
+     * @ORM\Column(type="string", length=255, name="first_name", nullable=true)
      * @var string
      */
     protected $firstName;
     
     /**
-     * @ORM\Column(type="string", length=255, name="last_name")
+     * @ORM\Column(type="string", length=255, name="last_name", nullable=true)
      * @var string
      */
     protected $lastName;

@@ -16,9 +16,12 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $sm = new SubscriptionManager($this->get('app.whoscored'), $this->getDoctrine()->getManager());
-        $sm->getTeam(272);
-
+        //$sm = new SubscriptionManager($this->get('app.whoscored'), $this->getDoctrine()->getManager());
+       //$sm->getSquads($this->getDoctrine()->getManager()->getRepository('AppBundle:Team')->findOneByWsId(13));
+//        $result = $this->get('app.whoscored')->loadStatistics('match-live-update', array('id' => 955860));
+//
+//        dump($result);
+//        die();
         return $this->render('default/index.html.twig');
     }
 

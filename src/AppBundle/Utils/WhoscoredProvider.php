@@ -146,6 +146,18 @@ class WhoscoredProvider
         }
         $code = 201;
 
+        if ($key == 'match-centre2' || $key == 'live-player-stats') {
+            $id = $param['id'];
+            $ret = ($key == 'match-centre2') ? 'matchCentreData' : 'matchStats';
+            $content = file_get_contents('C:\\UniServerZ\\www\\whoscored\\data\\' . $id . '\\' . $ret . '.json');
+
+            $content = json_decode($content);
+
+            if (json_last_error() !== JSON_ERROR_NONE || $content == null)  throw new \Exception('Json error or empty object', $code);
+
+            return $content;
+        }
+
         if (false === ($content = $this->cache->fetch($cache_key))) {
             $generator = new RequestGenerator(array(
                 CURLOPT_RETURNTRANSFER => true,
@@ -182,7 +194,7 @@ class WhoscoredProvider
 
             $this->cache->save($cache_key, $content);
         }
-
+        
         if (Url::isArray($key)) {
             $content = str_replace(array(',,', ',,', '"', "\'", ",]"), array(',null,', ',null,', '\"', "'", ",null]"), $content);
             $content = preg_replace("/'(.*?)'(\s*[,\]])/", '"$1"$2', $content);

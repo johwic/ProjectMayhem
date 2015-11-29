@@ -46,6 +46,7 @@ class Url
         'match-centre2' => '/matchesfeed/{id}/MatchCentre2',
         'player-tournament-history-stat' => '/stageplayerstatfeed/{playerId}/PlayerHistoryTournamentStats',
         'player-stats' => '/StatisticsFeed/1/GetPlayerStatistics',
+        'player-stats2' => '/StatisticsFeed/1/GetMatchCentrePlayerStatistics',
         'team-stats' => '/StatisticsFeed/1/GetTeamStatistics',
         'season' => '/Regions/{r}/Tournaments/{t}/',
         'stages' => '/Regions/{r}/Tournaments/{t}/Seasons/{s}',
@@ -85,7 +86,7 @@ class Url
 
     public static function isArray($key)
     {
-        $arr = array('stagefixtures', 'match-live-update', 'live-player-stats', 'regionteams');
+        $arr = array('stagefixtures', 'match-live-update', 'live-player-stats', 'regionteams', 'livescoreincidents');
 
         return in_array($key, $arr);
     }

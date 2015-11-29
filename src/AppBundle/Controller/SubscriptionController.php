@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Subscription;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,7 +12,9 @@ use AppBundle\Form\Type\StageType;
 use AppBundle\Form\Type\FixtureType;
 use AppBundle\Entity\Season;
 use AppBundle\Entity\Match;
+use AppBundle\Entity\Stage;
 use AppBundle\Utils\SubscriptionManager;
+use AppBundle\Utils\Scheduler;
 
 class SubscriptionController extends Controller
 {
@@ -83,6 +86,81 @@ class SubscriptionController extends Controller
         $sm->getMatchData($match);
 
         $this->addFlash('notice', 'Downloaded match data for match with WhoScored ID ' . $match->getWsId());
+
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @Route("/stages/{id}/get-data", name="download_match_data")
+     */
+    public function downloadMatch(Stage $stage)
+    {
+        $query = $this->getDoctrine()->getManager()->createQuery('SELECT m FROM AppBundle:Match m WHERE m.time < :time AND m.stage = :stage AND m.status = 0');
+        $query->setParameters(array('time' => time() - 3600*5, 'stage' => $stage->getId()));
+
+        $results = $query->getResult();
+        //dump($results);die();
+        $scheduler = new Scheduler();
+
+        foreach ($results as $match) {
+            $scheduler->schedule($match->getWsId());
+
+            $match->setStatus(2);
+        }
+
+        $this->getDoctrine()->getManager()->flush();
+        $this->addFlash('notice', 'Downloaded match data for match with WhoScored ID ' . count($results));
+
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @Route("/subscriptions", name="subscriptions")
+     */
+    public function manageSubscriptions()
+    {
+        $subscriptions = $this->getDoctrine()->getManager()->getRepository('AppBundle:Subscription')->findAll();
+        $stages= $this->getDoctrine()->getManager()->getRepository('AppBundle:Stage')->findAll();
+
+        return $this->render('subscription/subscriptions.html.twig', array('subscriptions' => $subscriptions, 'stages' => $stages));
+    }
+
+    /**
+     * @Route("/add-subscription", name="add_subscription")
+     */
+    public function addSubscription(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $stage = $em->getRepository('AppBundle:Stage')->findOneById($request->get('stage'));
+
+        if ($stage != null) {
+            $sub = new Subscription();
+            $sub->setStage($stage);
+            $sub->setSubscribed(true);
+            $em->persist($sub);
+            $em->flush();
+        }
+
+        $this->addFlash('notice', 'Added stage ' . $stage);
+
+        return $this->redirectToRoute('subscriptions');
+    }
+
+    /**
+     * @Route("/{id}/update-db", name="update-db")
+     */
+    public function updateDb(Stage $stage)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $query = $em->createQuery('SELECT m FROM AppBundle:Match m WHERE m.status = 2 AND m.stage = :stage')->setParameter('stage', $stage->getId());
+        $results = $query->getResult();
+
+        foreach ($results as $match) {
+            $sm = new SubscriptionManager($this->get('app.whoscored'), $this->get('doctrine.orm.entity_manager'));
+            $sm->getMatchData($match);
+        }
+
+        $this->addFlash('notice', 'Downloaded match data for match with WhoScored ID ' . count($results));
 
         return $this->redirectToRoute('homepage');
     }

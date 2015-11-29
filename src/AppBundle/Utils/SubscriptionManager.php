@@ -68,7 +68,7 @@ class SubscriptionManager
     {
         try {
             $matchData = $this->whoscored->loadStatistics('match-centre2', array('id' => $match->getWsId()));
-            $incidents = $this->whoscored->loadStatistics('match-live-update', array('id' => $match->getWsId()));
+            $incidents = $this->whoscored->loadStatistics('live-player-stats', array('id' => $match->getWsId()));
         } catch (\Exception $e) {
             throw $e;
         }

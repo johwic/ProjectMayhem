@@ -38,4 +38,11 @@ class BetController extends Controller
             'form' => $form->createView(),
         ));
     }
+
+    public function playerAction(Request $request)
+    {
+        $query = $this->getDoctrine()->getManager()->createQuery('SELECT p FROM AppBundle:StagePlayerStatistics p WHERE p.goalsScored > 5 AND s.stage = 1');
+
+        $results = $query->getResult();
+    }
 }

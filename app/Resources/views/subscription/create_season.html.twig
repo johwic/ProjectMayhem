@@ -39,7 +39,7 @@
             var $name = $('#{{ form.year.vars.id }}');
 
             $region.change(function () {
-                var url = '/ProjectMayhem/web/app_dev.php/get-tournaments/' + $(this).val();
+                var url = '{{ path('get-tournaments', {'id' : 0}) }}'.replace('0', $(this).val());
                 $(tournament).find('option:not(:first)').remove();
                 $(wsId).find('option:not(:first)').remove();
 
@@ -55,7 +55,7 @@
             });
 
             $region.closest('form').on('change', tournament, function () {
-                var url = '/ProjectMayhem/web/app_dev.php/find-seasons/' + $(this).val();
+                var url = '{{ path('find-seasons', {'id' : 0}) }}'.replace('0', $(this).val());
                 $(wsId).find('option:not(:first)').remove();
 
                 $.ajax({

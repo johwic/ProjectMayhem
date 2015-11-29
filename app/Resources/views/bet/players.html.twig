@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <table class="u-full-width">
+            <thead>
+            <th>Name</th>
+            <th>Action</th>
+            </thead>
+            <tfoot>
+            <tr>
+                <td colspan="2">
+                </td></tr>
+            </tfoot>
+            <tbody>
+            {% for player in players %}
+                <tr>
+                    <td>{{ region.name }}</td>
+                    <td></td>
+                </tr>
+            {%  else %}
+                <tr><td>No players found</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

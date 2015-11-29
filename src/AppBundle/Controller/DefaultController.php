@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Stage;
+use AppBundle\Utils\Scheduler;
 use AppBundle\Utils\SubscriptionManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -16,12 +17,39 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        //$sm = new SubscriptionManager($this->get('app.whoscored'), $this->getDoctrine()->getManager());
-       //$sm->getSquads($this->getDoctrine()->getManager()->getRepository('AppBundle:Team')->findOneByWsId(13));
-//        $result = $this->get('app.whoscored')->loadStatistics('match-live-update', array('id' => 955860));
-//
+//        $params = array(
+//            'age' => '',
+//            'ageComparisonType' => '',
+//            'appearances' => '',
+//            'appearancesComparisonType' => '',
+//            'category' => 'summary',
+//            'field' => 'Overall',
+//            'includeZeroValues' => 'true',
+//            'isCurrent' => 'true',
+//            'isMinApp' => 'false',
+//            'matchId' => '',
+//            'nationality' => '',
+//            'numberOfPlayersToPick' => '',
+//            'page' => '',
+//            'playerId' => 86570,
+//            'positionOptions' => '',
+//            'sotAscending' => '',
+//            'sortBy' => 'Rating',
+//            'stageId' => '',
+//            'statsAccumulationType' => 0,
+//            'subcategory' => 'all',
+//            'teamIds' => '',
+//            'timeOfTheGameEnd' => '',
+//            'timeOfTheGameStart' => '',
+//            'tournamentOptions' => ''
+//        );
+//        $result = $this->get('app.whoscored')->loadStatistics('player-stats', $params);
 //        dump($result);
 //        die();
+        //$scheduler = new Scheduler();
+        //dump($scheduler->schedule(959578));die();
+
+
         return $this->render('default/index.html.twig');
     }
 

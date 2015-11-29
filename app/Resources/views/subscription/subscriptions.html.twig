@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <table class="u-full-width bordered">
+            <thead>
+            <th>Name</th>
+            <th>Actions</th>
+            </thead>
+            <tbody>
+            {% for subscription in subscriptions %}
+                <tr>
+                    <td>{{ subscription.stage.name }}</td>
+                    <td><a href="{{ path('download_match_data', {'id' : subscription.stage.id}) }}"><i class="material-icons">get_app</i></a>&nbsp;<a href="{{ path('update-db', {'id' : subscription.stage.id}) }}"><i class="material-icons">update</i></a>&nbsp;<a href=""><i class="material-icons">delete</i></a></td>
+                </tr>
+            {%  else %}
+                <tr><td colspan="2">No subscriptions found</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <form method="get" action="{{ path('add_subscription') }}">
+            <select name="stage">
+                {%  for stage in stages %}
+                    <option value="{{ stage.id }}">{{ stage.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" class="button-primary" value="Subscribe" />
+        </form>
+    </div>
+{% endblock %}

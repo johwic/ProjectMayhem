@@ -12,15 +12,15 @@
 
         </div>
         {{ form_end(form) }}
-        <div class="row">
-            <div class="eight columns">Test</div>
-            <div class="four columns">sd</div>
+        <div class="row" id="stat_div">
+            <table><tbody></tbody></table>
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
     <script type="text/javascript">
+        var stat_url = '{{ path('player_stats', {'id' : 0}) }}';
         var conf = {
             url: "{{ form.vars.action }}",
             query_id: "#{{ form.knownName.vars.id }}",

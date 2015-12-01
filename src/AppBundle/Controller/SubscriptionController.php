@@ -37,11 +37,11 @@ class SubscriptionController extends Controller
             $d = $start;
             $count = 0;
             while ($d <= $end) {
-                $result = $sm->getFixtures($stage, date('o\WW', $d));
-                if ($result[0] == 200) {
-                    $count += $result[1];
-                } else {
-
+                try {
+                    $result = $sm->getFixtures($stage, date('o\WW', $d));
+                    $count += $result;
+                } catch (\Exception  $e) {
+                    dump($e);
                 }
 
                 $d += 60*60*24*7;
@@ -141,7 +141,7 @@ class SubscriptionController extends Controller
             $em->flush();
         }
 
-        $this->addFlash('notice', 'Added stage ' . $stage);
+        $this->addFlash('notice', 'Subscribed to stage ' . $stage);
 
         return $this->redirectToRoute('subscriptions');
     }
@@ -160,7 +160,7 @@ class SubscriptionController extends Controller
             $sm->getMatchData($match);
         }
 
-        $this->addFlash('notice', 'Downloaded match data for match with WhoScored ID ' . count($results));
+        $this->addFlash('notice', 'Flushed match data for stage ' . $stage->getName() . '. ' . count($results) . ' matches flushed.');
 
         return $this->redirectToRoute('homepage');
     }

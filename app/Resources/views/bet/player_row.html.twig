@@ -1,0 +1,11 @@
+{% for stat in stats %}
+    <tr>
+    <td>{{ stat.match.time | date("d/m/Y H:i", "Europe/Paris") }}</td>
+    <td>{{ stat.match.homeTeam.name }} - {{ stat.match.awayTeam.name }}</td>
+    <td>{{ stat.goalsScored }}</td>
+        <td>{{ stat.minsPlayed }}{% if stat.substitutionType == 2 %}<i class="material-icons md18">arrow_upward</i>{% elseif stat.substitutionType == 1 %}<i class="material-icons md18">arrow_downward</i>{% endif %}</td></tr>
+{% else %}
+    <tr>
+        <td>No results</td>
+    </tr>
+{% endfor %}

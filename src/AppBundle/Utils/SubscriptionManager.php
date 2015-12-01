@@ -34,7 +34,7 @@ class SubscriptionManager
         try {
             $fixtures = $this->whoscored->loadStatistics('stagefixtures', array('stageId' => $stage->getWsId(), 'd' => $week, 'isAggregate' => false));
         } catch (\Exception $e) {
-            $fixtures = array();
+            throw $e;
         }
         $rows_affected = 0;
 

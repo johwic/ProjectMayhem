@@ -2,6 +2,12 @@
 
 {% block body %}
     <div class="container">
+        {% for flashMessage in app.session.flashbag.get('notice') %}
+            <div class="box success">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+
         <table class="u-full-width bordered">
             <thead>
             <th>Name</th>

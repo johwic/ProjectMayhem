@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use AppBundle\Entity\Tournament;
 use AppBundle\Entity\Region;
+use AppBundle\Entity\Player;
 
 class AjaxController extends Controller
 {
@@ -61,5 +62,19 @@ class AjaxController extends Controller
         $content = array('seasons' => $ret);
 
         return new JsonResponse($content);
+    }
+
+    /**
+     * @Route("/players/{id}/stats", name="player_stats")
+     */
+    public function getPlayerData(Player $player)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $query = $em->createQuery('SELECT s, m FROM AppBundle:MatchPlayerStatistics s JOIN s.match m WHERE s.player = :player ORDER BY m.time DESC')
+            ->setParameter('player', $player)->setMaxResults(10);
+        $result = $query->getResult();
+
+        return new JsonResponse(array('html' => $this->renderView('bet/player_row.html.twig', array('stats' => $result))));
     }
 }

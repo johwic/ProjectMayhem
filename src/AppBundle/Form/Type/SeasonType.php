@@ -3,7 +3,10 @@
 namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Tournament;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormInterface;
@@ -25,16 +28,16 @@ class SeasonType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('region', 'entity', array(
+        $builder->add('region', EntityType::class, array(
             'class'       => 'AppBundle:Region',
             'placeholder' => 'Select region',
             'mapped'      => false
         ));
-        $builder->add('year', 'hidden');
+        $builder->add('year', HiddenType::class);
 
 
         $addTournamentField = function (FormInterface $form, $regionId = null) {
-            $form->add('tournament', 'entity', array(
+            $form->add('tournament', EntityType::class, array(
                 'class'       => 'AppBundle:Tournament',
                 'placeholder' => 'Select tournament',
                 'query_builder' => function (EntityRepository $repository) use ($regionId) {
@@ -53,12 +56,13 @@ class SeasonType extends AbstractType
             $ret = (null === $tournamentId) ? array() : $this->provider->getSeasonIds($tournamentId);
             $choices = array();
             foreach ($ret as $r) {
-                $choices[$r['wsid']] = $r['name'];
+                $choices[$r['name']] = $r['wsid'];
             }
 
-            $form->add('wsId', 'choice', array(
+            $form->add('wsId', ChoiceType::class, array(
                 'placeholder' => 'Select season',
                 'choices'     => $choices,
+                'choices_as_values' => true
             ));
         };
 
@@ -106,10 +110,5 @@ class SeasonType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'AppBundle\Entity\Season'
         ));
-    }
-
-    public function getName()
-    {
-        return 'createSeason';
     }
 }

@@ -16,7 +16,7 @@ class BetController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $form = $this->createForm(new SearchPlayerType());
+        $form = $this->createForm(SearchPlayerType::class);
         $form->handleRequest($request);
 
         if ($form->isValid()) {

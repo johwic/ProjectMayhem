@@ -4,14 +4,15 @@ parameters:
 #    parameter_name: value
 
 services:
+#    service_name:
+#        class: AppBundle\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
     app.menu_builder:
         class: AppBundle\Menu\MenuBuilder
         arguments: ["@knp_menu.factory"]
         tags:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main } # The alias is what is used to retrieve the menu
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
 
     app.cache:
         class: Doctrine\Common\Cache\FilesystemCache
@@ -20,3 +21,15 @@ services:
     app.whoscored:
         class: AppBundle\Utils\WhoscoredProvider
         arguments: ["@doctrine.orm.entity_manager", "@app.cache"]
+
+    app.form.type.season:
+        class: AppBundle\Form\Type\SeasonType
+        arguments: ["@app.whoscored"]
+        tags:
+            - { name: form.type }
+
+    app.form.type.stage:
+        class: AppBundle\Form\Type\StageType
+        arguments: ["@app.whoscored"]
+        tags:
+            - { name: form.type }

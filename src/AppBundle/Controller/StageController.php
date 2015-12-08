@@ -37,7 +37,7 @@ class StageController extends Controller
     public function createStageAction(Request $request)
     {
         $stage = new Stage();
-        $form = $this->createForm(new StageType($this->get('app.whoscored')), $stage);
+        $form = $this->createForm(StageType::class, $stage);
         $form->handleRequest($request);
 
         if ($form->isValid()) {

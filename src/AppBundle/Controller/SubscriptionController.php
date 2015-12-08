@@ -24,7 +24,7 @@ class SubscriptionController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $form = $this->createForm(new FixtureType());
+        $form = $this->createForm(FixtureType::class);
         $form->handleRequest($request);
         if ($form->isValid()) {
             $stage = $form->get('stage')->getData();
@@ -61,7 +61,7 @@ class SubscriptionController extends Controller
     public function createAction(Request $request)
     {
         $season = new Season();
-        $form = $this->createForm(new SeasonType($this->get('app.whoscored')), $season);
+        $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
 
         if ($form->isValid()) {

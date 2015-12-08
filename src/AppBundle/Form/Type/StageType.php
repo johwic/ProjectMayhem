@@ -3,7 +3,10 @@
 namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Tournament;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormInterface;
@@ -24,16 +27,16 @@ class StageType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('region', 'entity', array(
+        $builder->add('region', EntityType::class, array(
             'class' => 'AppBundle:Region',
             'placeholder' => 'Select region',
             'mapped' => false
         ));
-        $builder->add('name', 'hidden');
+        $builder->add('name', HiddenType::class);
 
 
         $addTournamentField = function (FormInterface $form, $regionId = null) {
-            $form->add('tournament', 'entity', array(
+            $form->add('tournament', EntityType::class, array(
                 'class' => 'AppBundle:Tournament',
                 'placeholder' => 'Select tournament',
                 'query_builder' => function (EntityRepository $repository) use ($regionId) {
@@ -48,7 +51,7 @@ class StageType extends AbstractType
         };
 
         $addSeasonField = function (FormInterface $form, $tournamentId = null) {
-            $form->add('season', 'entity', array(
+            $form->add('season', EntityType::class, array(
                 'class' => 'AppBundle:Season',
                 'placeholder' => 'Select season',
                 'query_builder' => function (EntityRepository $repository) use ($tournamentId) {
@@ -66,12 +69,13 @@ class StageType extends AbstractType
             $ret = (null === $seasonId) ? array() : $this->provider->getStageIds($seasonId);
             $choices = array();
             foreach ($ret as $r) {
-                $choices[$r['wsid']] = $r['name'];
+                $choices[$r['name']] = $r['wsid'];
             }
 
-            $form->add('wsId', 'choice', array(
+            $form->add('wsId', ChoiceType::class, array(
                 'placeholder' => 'Select stage',
                 'choices'     => $choices,
+                'choices_as_values' => true
             ));
         };
 
@@ -138,11 +142,6 @@ class StageType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'AppBundle\Entity\Stage'
         ));
-    }
-
-    public function getName()
-    {
-        return 'stage_type';
     }
 }
 

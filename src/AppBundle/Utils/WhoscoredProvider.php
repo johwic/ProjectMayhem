@@ -2,13 +2,14 @@
 
 namespace AppBundle\Utils;
 
+use CurlBundle\Logger\CurlRequestLogger;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DomCrawler\Crawler;
 
-use Zeroem\CurlBundle\Curl\RequestGenerator;
-use Zeroem\CurlBundle\HttpKernel\RemoteHttpKernel;
+use Teknoo\Curl\RequestGenerator;
+use CurlBundle\HttpKernel\RemoteHttpKernel;
 
 class WhoscoredProvider
 {
@@ -159,14 +160,6 @@ class WhoscoredProvider
         }
 
         if (false === ($content = $this->cache->fetch($cache_key))) {
-            $generator = new RequestGenerator(array(
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0',
-                CURLOPT_ENCODING => 'gzip, deflate',
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_FAILONERROR => true,
-                CURLOPT_REFERER => 'http://www.whoscored.com'
-            ));
 
             $req = Request::create(Url::get($key, $param), 'GET');
             $req->headers->add(array(
@@ -178,7 +171,15 @@ class WhoscoredProvider
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0'
             ));
 
-            $remoteKernel = new RemoteHttpKernel($generator);
+            $remoteKernel = new RemoteHttpKernel(array(
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0',
+                CURLOPT_ENCODING => 'gzip, deflate',
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_FAILONERROR => true,
+                CURLOPT_REFERER => 'http://www.whoscored.com'
+            ), null, null);
+
             try {
                 if ((microtime(true) - $this->timer) < 2) sleep(1);
                 $response = $remoteKernel->handle($req);

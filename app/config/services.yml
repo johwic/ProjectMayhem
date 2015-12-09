@@ -33,3 +33,9 @@ services:
         arguments: ["@app.whoscored"]
         tags:
             - { name: form.type }
+
+    curl.request_collector:
+        class: CurlBundle\DataCollector\CurlRequestCollector
+        public: false
+        tags:
+            - { name: data_collector, template: 'CurlBundle:Collector:curl', id: 'curl.request_collector' }

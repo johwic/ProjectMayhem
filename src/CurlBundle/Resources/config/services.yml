@@ -1,0 +1,11 @@
+parameters:
+    request_generator.options: []
+
+services:
+    request_generator:
+        class:     CurlBundle\RequestGenerator
+        arguments: [%request_generator.options%]
+
+    remotehttpkernel:
+        class:     CurlBundle\HttpKernel\RemoteHttpKernel
+        arguments: [@?request_generator]

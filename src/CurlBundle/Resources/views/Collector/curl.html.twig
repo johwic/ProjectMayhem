@@ -1,0 +1,139 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        {% set status_color = collector.returnedErrorCount > 0 ? 'red' : '' %}
+        {{ include('@Curl/Icon/curl.svg') }}
+        <span class="sf-toolbar-value">{{ collector.callcount }}</span>
+        {% if collector.callcount > 0 %}
+            <span class="sf-toolbar-info-piece-additional-detail">in {{ collector.time }} ms</span>
+        {% endif %}
+        {% if collector.returnedErrorCount > 0 %}
+            <span class="sf-toolbar-info-piece-additional sf-toolbar-status sf-toolbar-status-red"> </span>
+        {% endif %}
+    {% endset %}
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>Curl Requests</b>
+            <span class="sf-toolbar-status">{{ collector.callcount }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Total time</b>
+            <span>{{ collector.time }} ms</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Errors</b>
+            <span class="sf-toolbar-status sf-toolbar-status-{{ status_color }}">{{ collector.returnedErrorCount }}</span>
+        </div>
+    {% endset %}
+    {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { link: profiler_url, status: status_color } %}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+    <span class="icon">{{ include('@Curl/Icon/curl.svg') }}</span>
+    <strong>Curl</strong>
+    <span class="count">
+        <span>{{ collector.callcount }}</span>
+        <span>{{ collector.time }} ms</span>
+    </span>
+</span>
+{% endblock %}
+
+{% block panel %}
+    <div class="sf-tabs">
+    {% for call in collector.calls %}
+        <div class="tab">
+            <h3 class="tab-title">Request</h3>
+
+            <div class="tab-content">
+                <h3>GET Parameters</h3>
+
+                {% if call.request.query.all is empty %}
+                    <div class="empty">
+                        <p>No GET parameters</p>
+                    </div>
+                {% else %}
+                    {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: call.request.query }, with_context = false) }}
+                {% endif %}
+
+                <h3>POST Parameters</h3>
+
+                {% if call.request.request.all is empty %}
+                    <div class="empty">
+                        <p>No POST parameters</p>
+                    </div>
+                {% else %}
+                    {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: call.request.request }, with_context = false) }}
+                {% endif %}
+
+                <h3>Request Attributes</h3>
+
+                {% if call.request.attributes.all is empty %}
+                    <div class="empty">
+                        <p>No attributes</p>
+                    </div>
+                {% else %}
+                    {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: call.request.attributes }, with_context = false) }}
+                {% endif %}
+
+                <h3>Cookies</h3>
+
+                {% if call.request.cookies.all is empty %}
+                    <div class="empty">
+                        <p>No cookies</p>
+                    </div>
+                {% else %}
+                    {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: call.request.cookies }, with_context = false) }}
+                {% endif %}
+
+                <h3>Request Headers</h3>
+                {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: call.request.headers, labels: ['Header', 'Value'] }, with_context = false) }}
+
+                <h3>Request Content</h3>
+
+                {% if call.request.content == false %}
+                    <div class="empty">
+                        <p>Request content not available (it was retrieved as a resource).</p>
+                    </div>
+                {% elseif call.request.content %}
+                    <div class="card">
+                        <pre class="break-long-words">{{ call.request.content }}</pre>
+                    </div>
+                {% else %}
+                    <div class="empty">
+                        <p>No content</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab">
+            <h3 class="tab-title">Response</h3>
+
+            <div class="tab-content">
+                <h3>Response Headers</h3>
+
+                {{ include('@WebProfiler/Profiler/bag.html.twig', { bag: call.response.headers, labels: ['Header', 'Value'] }, with_context = false) }}
+
+                <h3>Response Content</h3>
+
+                {% if call.response.content == false %}
+                    <div class="empty">
+                        <p>Request content not available (it was retrieved as a resource).</p>
+                    </div>
+                {% elseif call.response.content %}
+                    <div class="card">
+                        <pre class="break-long-words">{{ call.response.content }}</pre>
+                    </div>
+                {% else %}
+                    <div class="empty">
+                        <p>No content</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+{% endblock %}

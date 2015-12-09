@@ -8,9 +8,6 @@
         {% if collector.callcount > 0 %}
             <span class="sf-toolbar-info-piece-additional-detail">in {{ collector.time }} ms</span>
         {% endif %}
-        {% if collector.returnedErrorCount > 0 %}
-            <span class="sf-toolbar-info-piece-additional sf-toolbar-status sf-toolbar-status-red"> </span>
-        {% endif %}
     {% endset %}
     {% set text %}
         <div class="sf-toolbar-info-piece">

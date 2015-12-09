@@ -84,11 +84,15 @@ class RemoteHttpKernel implements HttpKernelInterface
 
     private function getCurlRequest()
     {
-        if (isset($this->generator)) {
-            return $this->generator->getRequest();
-        } else {
-            return new CurlRequest(new Options());
+        if (!isset($this->generator)) {
+            $this->generator = new RequestGenerator();
+            $request = new CurlRequest(new Options());
+            $request->setOptionArray($this->options);
+
+            $this->generator->setRequest($request);
         }
+
+        return $this->generator->getRequest();
     }
 
     /**
@@ -103,8 +107,7 @@ class RemoteHttpKernel implements HttpKernelInterface
     private function handleRaw(Request $request)
     {
         if ($this->logger) $this->logger->startRequest($request);
-        $curl = $this->lastCurlRequest = $this->getCurlRequest();
-        $curl->setOptionArray($this->options);
+        $curl = $this->getCurlRequest();
         $curl->setOptionArray(
             array(
                 CURLOPT_URL => $request->getUri(),

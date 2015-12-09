@@ -23,10 +23,10 @@ class CurlRequestLogger
     /**
      * Constructor.
      *
-     * @param LoggerInterface $logger A LoggerInterface instance
-     * @param Stopwatch $stopwatch A LoggerInterface instance
+     * @param LoggerInterface $logger    A LoggerInterface instance
+     * @param Stopwatch       $stopwatch A Stopwatch instance
      */
-    public function __construct(LoggerInterface $logger, Stopwatch $stopwatch)
+    public function __construct(LoggerInterface $logger = null, Stopwatch $stopwatch = null)
     {
         $this->logger = $logger;
         $this->stopwatch = $stopwatch;

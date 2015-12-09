@@ -2,6 +2,7 @@
 # http://symfony.com/doc/current/book/service_container.html
 parameters:
 #    parameter_name: value
+    curl.default_options: {CURLOPT_RETURNTRANSFER : true, CURLOPT_ENCODING : 'gzip, deflate', CURLOPT_FAILONERROR : true, CURLOPT_USERAGENT : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0', CURLOPT_ENCODING : 'gzip, deflate', CURLOPT_REFERER : 'http://www.whoscored.com'}
 
 services:
 #    service_name:
@@ -20,7 +21,7 @@ services:
 
     app.whoscored:
         class: AppBundle\Utils\WhoscoredProvider
-        arguments: ["@doctrine.orm.entity_manager", "@app.cache"]
+        arguments: ["@doctrine.orm.entity_manager", "@app.cache", "@curl.remote_http_kernel"]
 
     app.form.type.season:
         class: AppBundle\Form\Type\SeasonType
@@ -36,6 +37,18 @@ services:
 
     curl.request_collector:
         class: CurlBundle\DataCollector\CurlRequestCollector
+        arguments: ["@?curl.request_logger"]
         public: false
         tags:
             - { name: data_collector, template: 'CurlBundle:Collector:curl', id: 'curl.request_collector' }
+
+    curl.request_logger:
+        class: CurlBundle\Logger\CurlRequestLogger
+        arguments: ["@?logger", "@?debug.stopwatch"]
+        public: false
+        tags:
+            - { name: monolog.logger, channel: "curl" }
+
+    curl.remote_http_kernel:
+        class: CurlBundle\HttpKernel\RemoteHttpKernel
+        arguments: ["%curl.default_options%", "@?curl.request_logger"]

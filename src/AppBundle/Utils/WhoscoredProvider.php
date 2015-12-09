@@ -2,13 +2,11 @@
 
 namespace AppBundle\Utils;
 
-use CurlBundle\Logger\CurlRequestLogger;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DomCrawler\Crawler;
 
-use Teknoo\Curl\RequestGenerator;
 use CurlBundle\HttpKernel\RemoteHttpKernel;
 
 class WhoscoredProvider
@@ -16,11 +14,13 @@ class WhoscoredProvider
     private $em;
     private $cache;
     private $timer;
+    private $remoteKernel;
 
-    public function __construct(EntityManager $em, FilesystemCache $cache) {
+    public function __construct(EntityManager $em, FilesystemCache $cache, RemoteHttpKernel $kernel = null) {
         $this->em = $em;
         $this->cache = $cache;
         $this->timer = 0;
+        $this->remoteKernel = $kernel;
     }
 
     public function getSeasonIds($id)
@@ -33,9 +33,9 @@ class WhoscoredProvider
 
         if (false === ($content = $this->cache->fetch($cache_key))) {
             $req = Request::create(Url::get('season', array('r' => $r, 't' => $t)), 'GET');
-            $remoteKernel = new RemoteHttpKernel();
+
             try {
-                $response = $remoteKernel->handle($req);
+                $response = $this->remoteKernel->handle($req);
             } catch (\Exception $e) {
                 throw $e;
             }
@@ -66,10 +66,9 @@ class WhoscoredProvider
 
         if (false === ($content = $this->cache->fetch($cache_key))) {
             $req = Request::create(Url::get('stages', array('r' => $r, 't' => $t, 's' => $s)), 'GET');
-            $remoteKernel = new RemoteHttpKernel();
 
             try {
-                $response = $remoteKernel->handle($req);
+                $response = $this->remoteKernel->handle($req);
             } catch (\Exception $e) {
                 throw $e;
             }
@@ -103,9 +102,8 @@ class WhoscoredProvider
         if (false === ($content = $this->cache->fetch($cache_key))) {
             $req = Request::create(Url::get('player', array('p' => $playerId)), 'GET');
 
-            $remoteKernel = new RemoteHttpKernel();
             try {
-                $response = $remoteKernel->handle($req);
+                $response = $this->remoteKernel->handle($req);
             } catch (\Exception $e) {
                 throw $e;
             }
@@ -132,7 +130,7 @@ class WhoscoredProvider
 
     /**
      * @param String $key Url key
-     * @param Array $param Array of parameters
+     * @param array $param Array of parameters
      *
      * @return Object $content
      *
@@ -171,18 +169,9 @@ class WhoscoredProvider
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0'
             ));
 
-            $remoteKernel = new RemoteHttpKernel(array(
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0',
-                CURLOPT_ENCODING => 'gzip, deflate',
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_FAILONERROR => true,
-                CURLOPT_REFERER => 'http://www.whoscored.com'
-            ), null, null);
-
             try {
                 if ((microtime(true) - $this->timer) < 2) sleep(1);
-                $response = $remoteKernel->handle($req);
+                $response = $this->remoteKernel->handle($req);
             } catch (\Exception $e) {
                 throw $e;
             }

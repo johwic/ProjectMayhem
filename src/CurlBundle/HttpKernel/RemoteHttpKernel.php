@@ -43,10 +43,12 @@ class RemoteHttpKernel implements HttpKernelInterface
     private $options;
     private $lastCurlRequest;
 
-    public function __construct($options = array(), RequestGenerator $generator = null, CurlRequestLogger $logger = null)
+    public function __construct($options = array(), CurlRequestLogger $logger = null)
     {
-        $this->options = $options;
-        $this->generator = $generator;
+        $this->options = array();
+        foreach ($options as $option => $value) {
+            $this->options[constant($option)] = $value;
+        }
         $this->logger = $logger;
     }
 
@@ -102,12 +104,13 @@ class RemoteHttpKernel implements HttpKernelInterface
     {
         if ($this->logger) $this->logger->startRequest($request);
         $curl = $this->lastCurlRequest = $this->getCurlRequest();
-        $curl->setOptionArray(array_merge($this->options,
+        $curl->setOptionArray($this->options);
+        $curl->setOptionArray(
             array(
                 CURLOPT_URL => $request->getUri(),
                 CURLOPT_HTTPHEADER => $this->buildHeadersArray($request->headers),
                 CURLINFO_HEADER_OUT => true
-            ))
+            )
         );
 
         $curl->setMethod($request->getMethod());

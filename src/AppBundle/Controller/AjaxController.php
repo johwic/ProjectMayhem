@@ -75,6 +75,47 @@ class AjaxController extends Controller
             ->setParameter('player', $player)->setMaxResults(10);
         $result = $query->getResult();
 
-        return new JsonResponse(array('html' => $this->renderView('bet/player_row.html.twig', array('stats' => $result))));
+        $stats = array();
+        $stats['gpg_five'] = 0;
+        $stats['gpg_ten'] = 0;
+        $stats['scored_five'] = 0;
+        $stats['scored_ten'] = 0;
+        foreach ($result as $i => $match) {
+            if ($i < 5) {
+                if ($match->getGoalsScored() > 0) {
+                    $stats['gpg_five'] += $match->getGoalsScored() / 5;
+                    $stats['scored_five'] += 1;
+                }
+            }
+
+            if ($match->getGoalsScored() > 0) {
+                $stats['gpg_ten'] += $match->getGoalsScored() / 10;
+                $stats['scored_ten'] += 1;
+            }
+        }
+
+        return new JsonResponse(array(
+            'html' => $this->renderView('bet/player_row.html.twig', array('stats' => $result)),
+            'stats' => $this->renderView('bet/player_side_bar.html.twig', array('stats' => $stats))
+        ));
+    }
+
+    /**
+     * @Route("/api/players/{q}", name="search_player")
+     */
+    public function searchPlayers($q = '')
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $query = $em->createQuery('SELECT p FROM AppBundle:Player p WHERE p.knownName LIKE :name')->setMaxResults(10);
+        $query->setParameter('name','%' . $q . '%');
+
+        $result = $query->getResult();
+        $json = array();
+        foreach ($result as $player) {
+            $json[] = array('title' => $player->getKnownName(), 'description' => $player->getTeam()->getName(), 'id' => $player->getId());
+        }
+
+        return new JsonResponse(array('results' => $json));
     }
 }

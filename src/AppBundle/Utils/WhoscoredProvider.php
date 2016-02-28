@@ -128,15 +128,118 @@ class WhoscoredProvider
         return $content;
     }
 
+    public function getPlayerData($playerId)
+    {
+        $cache_key = 'player_' . $playerId;
+        $code = 201;
+
+        if (false === ($content = $this->cache->fetch($cache_key))) {
+            $req = Request::create(Url::get('player', array('p' => $playerId)), 'GET');
+
+            try {
+                $response = $this->remoteKernel->handle($req);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            $code = $response->getStatusCode();
+            $html = $response->getContent();
+
+            if ($code !== 200) throw new \Exception($html, $code);
+
+            $crawler = new Crawler($html);
+
+            $node = $crawler->filterXPath('//script[contains(., "Model-Last-Mode")]')->text();
+            preg_match("/'Model-Last-Mode': '(.*?)' }/", $node, $matches);
+            $modelLastMode = $matches[1];
+
+            $data = $crawler->filterXPath('//script[contains(., "var currentTeamId")]')->text();
+            preg_match('/var currentTeamId = (\d*?);/', $data, $teamId);
+            $teamId = $teamId[1];
+
+            $params = array(
+                'age' => '',
+                'ageComparisonType' => '',
+                'appearances' => '',
+                'appearancesComparisonType' => '',
+                'category' => 'summary',
+                'field' => 'Overall',
+                'includeZeroValues' => 'true',
+                'isCurrent' => 'true',
+                'isMinApp' => 'false',
+                'matchId' => '',
+                'nationality' => '',
+                'numberOfPlayersToPick' => '',
+                'page' => '',
+                'playerId' => $playerId,
+                'positionOptions' => '',
+                'sotAscending' => '',
+                'sortBy' => 'Rating',
+                'stageId' => '',
+                'statsAccumulationType' => 0,
+                'subcategory' => 'all',
+                'teamIds' => '',
+                'timeOfTheGameEnd' => '',
+                'timeOfTheGameStart' => '',
+                'tournamentOptions' => ''
+            );
+
+            try {
+                $data = $this->loadStatistics('player-stats', $params, array('Model-Last-Mode' => $modelLastMode, 'Referer' => $req->getUri()));
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            $player = array();
+            if (empty($data->playerTableStats)) {
+                $info = $crawler->filterXPath('//div[@id="player-profile"]//dl/dt')->each(function (Crawler $node, $i) {
+                    return array('key' => $node->text(), 'value' => trim($node->siblings()->text()));
+                });
+
+                $name = '';
+                $age = 0;
+                foreach ($info as $item) {
+                    if ($item['key'] == 'Name:') {
+                        $name = $item['value'];
+                    }
+                }
+
+                $player['firstName'] = null;
+                $player['lastName'] = null;
+                $player['knownName'] = $name;
+                $player['age'] = $age;
+                $player['wsId'] = $playerId;
+                $player['teamId'] = $teamId;
+            } else {
+                $player['firstName'] = $data->playerTableStats[0]->firstName;
+                $player['lastName'] = $data->playerTableStats[0]->lastName;
+                $player['knownName'] = $data->playerTableStats[0]->name;
+                $player['age'] = $data->playerTableStats[0]->age;
+                $player['wsId'] = $playerId;
+                $player['teamId'] = $teamId;
+            }
+
+            $content = json_encode($player);
+            $this->cache->save($cache_key, $content, 3600*24*7);
+        }
+
+        $content = json_decode($content);
+
+        if (json_last_error() !== JSON_ERROR_NONE || $content == null)  throw new \Exception('Json error or empty object', $code);
+
+        return $content;
+    }
+
     /**
      * @param String $key Url key
      * @param array $param Array of parameters
+     * @param array $headers Additional headers to send
      *
      * @return Object $content
      *
      * @throws \Exception
      */
-    public function loadStatistics($key, $param)
+    public function loadStatistics($key, $param, $headers = array())
     {
         ksort($param);
         $cache_key = $key;
@@ -160,14 +263,14 @@ class WhoscoredProvider
         if (false === ($content = $this->cache->fetch($cache_key))) {
 
             $req = Request::create(Url::get($key, $param), 'GET');
-            $req->headers->add(array(
+            $req->headers->add(array_merge(array(
                 'Host' => 'www.whoscored.com',
                 'Accept' => 'text/plain, */*; q=0.01',
                 'Accept-Language' => 'sv-SE,sv;q=0.8,en-US;q=0.5,en;q=0.3',
                 'X-Requested-With' => 'XMLHttpRequest',
                 'Connection' => 'keep-alive',
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0'
-            ));
+            ), $headers));
 
             try {
                 if ((microtime(true) - $this->timer) < 2) sleep(1);

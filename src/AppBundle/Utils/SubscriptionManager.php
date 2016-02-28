@@ -77,8 +77,8 @@ class SubscriptionManager
         $homeTeam = $match->getHomeTeam();
         $awayTeam = $match->getAwayTeam();
 
-        $this->getSquads($homeTeam);
-        $this->getSquads($awayTeam);
+        //$this->getSquads($homeTeam);
+        //$this->getSquads($awayTeam);
 
         $statBuilder = new StatBuilder();
         $statBuilder->prepareEvents($matchData->events);
@@ -192,49 +192,20 @@ class SubscriptionManager
         }
 
         if ($player == null) {
-            $params = array(
-                'age' => '',
-                'ageComparisonType' => '',
-                'appearances' => '',
-                'appearancesComparisonType' => '',
-                'category' => 'summary',
-                'field' => 'Overall',
-                'includeZeroValues' => 'true',
-                'isCurrent' => 'true',
-                'isMinApp' => 'false',
-                'matchId' => '',
-                'nationality' => '',
-                'numberOfPlayersToPick' => '',
-                'page' => '',
-                'playerId' => $wsId,
-                'positionOptions' => '',
-                'sotAscending' => '',
-                'sortBy' => 'Rating',
-                'stageId' => '',
-                'statsAccumulationType' => 0,
-                'subcategory' => 'all',
-                'teamIds' => '',
-                'timeOfTheGameEnd' => '',
-                'timeOfTheGameStart' => '',
-                'tournamentOptions' => ''
-            );
 
             try {
-                $data = $this->whoscored->loadStatistics('player-stats', $params);
+                $data = $this->whoscored->getPlayerData($wsId);
             } catch (\Exception $e) {
                 throw $e;
             }
 
-            if (empty($data->playerTableStats)) return null;//throw new \Exception('No player data found');
-
             $player = new Player();
 
-            $player->setFirstName($data->playerTableStats[0]->firstName);
-            $player->setLastName($data->playerTableStats[0]->lastName);
-            $player->setKnownName($data->playerTableStats[0]->name);
-            $player->setAge($data->playerTableStats[0]->age);
-            $player->setWsId($wsId);
-
+            $player->setFirstName($data->firstName);
+            $player->setLastName($data->lastName);
+            $player->setKnownName($data->knownName);
+            $player->setAge($data->age);
+            $player->setWsId($data->wsId);
         }
 
         if ($team !== null && $player->getTeam() !== $team) {

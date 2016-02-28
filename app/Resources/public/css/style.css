@@ -17,6 +17,8 @@ body {
     margin-bottom: 10px;
 
     padding-bottom: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 
@@ -52,7 +54,7 @@ body {
 
 #result_div table tr:last-child td
 {
-    border-bottom: none;
+    #border-bottom: none;
 }
 
 #result_div table td:first-child
@@ -62,7 +64,7 @@ body {
 
 .hover
 {
-    background-color: rgb(236, 236, 236);
+    #background-color: rgb(236, 236, 236);
 }
 
 /* End of result div and table */
@@ -128,6 +130,8 @@ body {
     font-family: Raleway, sans-serif;
     line-height: 1;
     margin-bottom: 15px;
+    margin-right: -10px;
+    margin-left: -10px;
 }
 #cssmenu ul {
     background: #ffffff;
@@ -309,3 +313,21 @@ ul.pagination li.current a:hover, ul.pagination li.current a:focus, ul.paginatio
 ul.pagination li {
     display: block;
     float: left; }
+
+
+.goal-title {
+    margin: -0.14285em 0em 0em;
+    font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 1em;
+    color: rgba(0, 0, 0, 0.85);
+}
+.goal-description {
+    margin-top: 0;
+    font-size: 0.92857143em;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.goal-content {
+    line-height: 1em;
+}

@@ -1,69 +1,42 @@
 {% if pageCount > 1 %}
-        <ul class="pagination">
 
-            {% if previous is defined %}
-                <li class="arrow">
-                    <a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&laquo;</a>
-                </li>
+    {% if previous is defined %}
+        <a class="icon item" href="{{ path(route, query|merge({(pageParameterName): previous})) }}"><i class="left chevron icon"></i></a>
+    {% else %}
+        <a class="icon item disabled" href=""><i class="left chevron icon"></i></a>
+    {% endif %}
+
+    {% if startPage > 1 %}
+        <a class="item" href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
+        {% if startPage == 3 %}
+            <a class="item" href="{{ path(route, query|merge({(pageParameterName): 2})) }}">2</a>
+        {% elseif startPage != 2 %}
+            <a class="item disabled" href="">&hellip;</a>
+        {% endif %}
+    {% endif %}
+
+    {% for page in pagesInRange %}
+        {% if page != current %}
+            <a class="item" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+        {% else %}
+            <a class="item" href="">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if pageCount > endPage %}
+        {% if pageCount > (endPage + 1) %}
+            {% if pageCount > (endPage + 2) %}
+                <a class="item disabled" href="">&hellip;</a>
             {% else %}
-                <li class="arrow unavailable">
-                    &laquo;
-                </li>
+                <a class="item" href="{{ path(route, query|merge({(pageParameterName): (pageCount - 1)})) }}">{{ pageCount -1 }}</a>
             {% endif %}
+        {% endif %}
+        <a class="item" href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
+    {% endif %}
 
-            {% if startPage > 1 %}
-                <li>
-                    <a href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
-                </li>
-                {% if startPage == 3 %}
-                    <li>
-                        <a href="{{ path(route, query|merge({(pageParameterName): 2})) }}">2</a>
-                    </li>
-                {% elseif startPage != 2 %}
-                    <li class="unavailable">
-                        <a href="">&hellip;</a>
-                    </li>
-                {% endif %}
-            {% endif %}
-
-            {% for page in pagesInRange %}
-                {% if page != current %}
-                    <li>
-                        <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
-                    </li>
-                {% else %}
-                    <li class="current">
-                        <a href="">{{ page }}</a>
-                    </li>
-                {% endif %}
-
-            {% endfor %}
-
-            {% if pageCount > endPage %}
-                {% if pageCount > (endPage + 1) %}
-                    {% if pageCount > (endPage + 2) %}
-                        <li class="unavailable">
-                            <a href="">&hellip;</a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a href="{{ path(route, query|merge({(pageParameterName): (pageCount - 1)})) }}">{{ pageCount -1 }}</a>
-                        </li>
-                    {% endif %}
-                {% endif %}
-                <li>
-                    <a href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
-                </li>
-            {% endif %}
-
-            {% if next is defined %}
-                <li class="arrow">
-                    <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">&raquo;</a>
-                </li>
-            {% else %}
-                <li class="arrow unavailable">
-                    <a href="">&raquo;</a>
-                </li>
-            {% endif %}
-        </ul>
+    {% if next is defined %}
+        <a class="icon item" href="{{ path(route, query|merge({(pageParameterName): next})) }}"><i class="right chevron icon"></i></a>
+    {% else %}
+        <a class="icon item disabled" href=""><i class="right chevron icon"></i></a>
+    {% endif %}
 {% endif %}

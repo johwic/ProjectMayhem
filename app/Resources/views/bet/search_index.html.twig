@@ -1,37 +1,68 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container">
-        {% form_theme form 'form/form_layout.html.twig' %}
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
+    <div class="ui grid">
 
-        <div id="result_div">
+        <div class="four wide column">
+            <div id ="search_div" class="ui fluid search">
+                <div class="ui fluid icon input">
+                    <input class="prompt" placeholder="Search players..." type="text">
+                    <i class="search icon"></i>
+                </div>
 
-                <table><tbody></tbody></table>
+                <div class="results"></div>
+            </div>
+            <div class="ui segment goal-stats">
+                <table class="ui definition table">
+                    <thead>
 
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
         </div>
-        {{ form_end(form) }}
-        <div class="row" id="stat_div">
-            <table><tbody></tbody></table>
+
+        <div id="stat_div" class="twelve wide column">
+            <table class="ui selectable celled table"></table>
+            <div class="ui loader"></div>
         </div>
+
     </div>
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
     <script type="text/javascript">
         var stat_url = '{{ path('player_stats', {'id' : 0}) }}';
-        var conf = {
-            url: "{{ form.vars.action }}",
-            query_id: "#{{ form.knownName.vars.id }}",
-            result_id: "#result_div",
-            slide_speed: "fast",
-            type_delay: 350,
-            select_column_index: 0
-        };
+        var $stat_div = $('#stat_div');
+        $('#search_div')
+                .search({
+                    apiSettings: {
+                        url: 'api/players/{query}'
+                    },
+
+                    onSelect: function (result,response) {
+                        $.ajax({
+                            beforeSend: function() {
+                                $('.ui.loader').addClass('active');
+                                $('.ui.segment').addClass('loading');
+                            },
+                            type: 'GET',
+                            url: stat_url.replace('0', result.id),
+                            success: function (response) {
+                                $stat_div.find('table').html('<tbody>' + response.html + '<tbody>');
+                                $('.ui.segment').find('table tbody').html(response.stats);
+                            },
+                            complete: function() {
+                                $('.ui.loader').removeClass('active');;
+                                $('.ui.segment').removeClass('loading');
+                            }
+                        });
+                        return true;
+                    }
+                })
+        ;
     </script>
-    {{ parent() }}
-    {%  javascripts '%kernel.root_dir%/Resources/public/js/script.js'%}
-<script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
 {% endblock %}

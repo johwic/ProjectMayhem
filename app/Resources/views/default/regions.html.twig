@@ -2,18 +2,21 @@
 
 {% block body %}
     <div class="container">
-        <table class="u-full-width">
+        <table class="ui celled table">
             <thead>
-            <th>Name</th>
-            <th>Action</th>
+                <th>Name</th>
+                <th>Action</th>
             </thead>
+
             {% do pagination.setTemplate('::pagination.html.twig') %}
             <tfoot>
-            <tr>
-                <td colspan="2">
-                    {{ knp_pagination_render(pagination) }}
-                </td></tr>
+                <tr>
+                    <th colspan="2">
+                        <div class="ui right floated pagination menu">{{ knp_pagination_render(pagination) }}</div>
+                    </th>
+                </tr>
             </tfoot>
+
             <tbody>
             {% for region in pagination %}
                 <tr>

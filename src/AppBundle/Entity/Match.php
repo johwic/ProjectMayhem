@@ -51,10 +51,35 @@ class Match
     protected $time;
 
     /**
+     * @ORM\Column(type="integer", options={"unsigned"=true}, name="is_opta")
+     * @var int
+     */
+    protected $isOpta;
+
+    /**
      * @ORM\Column(type="integer", options={"unsigned"=true}, name="status")
      * @var int
      */
     protected $status;
+
+    /**
+     * @return int
+     */
+    public function getIsOpta()
+    {
+        return $this->isOpta;
+    }
+
+    /**
+     * @param int $isOpta
+     * @return Match
+     */
+    public function setIsOpta($isOpta)
+    {
+        $this->isOpta = $isOpta;
+
+        return $this;
+    }
 
     /**
      * @return int
@@ -66,10 +91,13 @@ class Match
 
     /**
      * @param int $status
+     * @return Match
      */
     public function setStatus($status)
     {
         $this->status = $status;
+
+        return $this;
     }
 
     /**
